@@ -302,6 +302,22 @@
             font-size: 15px; cursor: pointer; border-radius: 2px; flex-shrink: 0;
         }
         .song-item:hover, .radio-item:hover, .book-item:hover { background: rgba(191,232,255,0.15); }
+
+        /* ===== MP3: pantalla NO táctil =====
+           Las canciones y radios se controlan exclusivamente con la ruedita.
+           MP4 conserva el comportamiento táctil. */
+        #mp3-player .song-item,
+        #mp3-player .radio-item,
+        #mp3-player .lcd-view {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        #mp3-player .song-item,
+        #mp3-player .radio-item {
+            pointer-events: none;
+            cursor: default !important;
+        }
         .song-item.active, .radio-item.active { background: rgba(191,232,255,0.3); font-weight: bold; }
         .song-item .song-name, .radio-item .radio-name, .book-item .book-name {
             flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -503,6 +519,13 @@
         .song-menu .btn-delete { background: #c0392b; }
         .song-menu .btn-cancel { background: rgba(255,255,255,0.1); }
 
+
+        /* Controles táctiles del MP3: desactivados; la ruedita manda. */
+        #mp3-player #mp3-play,
+        #mp3-player #mp3-duration_slider {
+            pointer-events: none;
+        }
+
         @media(max-width: 500px) {
             .mode-buttons { flex-direction: column; }
             .device, .device-wrap .top-bar { width: 92vw; max-width: 340px; }
@@ -621,7 +644,7 @@
 
             <div class="controls-row">
                 <div class="side-switches">
-                    <div class="switch-toggle active-local" id="mp3-source_switch" onclick="toggleSource('mp3')" title="Elegir fuente activa para la ruedita">
+                    <div class="switch-toggle active-local" id="mp3-source_switch" onclick="toggleSource('mp3')" title="Cambiar instantáneamente entre Carpeta (C) y Nube (N)">
                         <span class="switch-option top">N</span>
                         <span class="switch-knob"></span>
                         <span class="switch-option bottom">C</span>
@@ -1315,12 +1338,70 @@
         function addRadioStation(type) { players[type].addRadioStation(); }
 
         // ===== INTERRUPTORES: fuente activa (Nube/Carpeta) y bloqueo de controles =====
-        function toggleSource(type) {
-            const state = players[type].getState();
-            state.source = state.source === 'cloud' ? 'local' : 'cloud';
-            const el = document.getElementById(`${type}-source_switch`);
-            el.classList.toggle('active-cloud', state.source === 'cloud');
-            el.classList.toggle('active-local', state.source === 'local');
+        async function toggleSource(type) {
+            const player = players[type];
+            const state = player.getState();
+
+            if (state.locked) return;
+
+            const newSource = state.source === 'cloud' ? 'local' : 'cloud';
+
+            // IMPORTANTE:
+            // Al cambiar N <-> C se detiene INMEDIATAMENTE la fuente anterior.
+            // Así nunca queda reproduciéndose la canción de la carpeta anterior.
+            try {
+                if (state.radioPlaying) player.stopRadio();
+                player.pause();
+            } catch (e) {
+                console.warn('No se pudo detener la fuente anterior:', e);
+            }
+
+            state.source = newSource;
+
+            const switchEl = document.getElementById(`${type}-source_switch`);
+            if (switchEl) {
+                switchEl.classList.toggle('active-cloud', state.source === 'cloud');
+                switchEl.classList.toggle('active-local', state.source === 'local');
+            }
+
+            // Cambia de carpeta/fuente AL INSTANTE y comienza a reproducir
+            // el elemento correspondiente de la nueva fuente.
+            if (state.source === 'cloud') {
+                if (state.cloudMedia.length > 0) {
+                    const index = Math.min(
+                        Math.max(Number(state.cloudIndex) || 0, 0),
+                        state.cloudMedia.length - 1
+                    );
+                    playCloudTrackByIndex(type, index);
+                } else {
+                    state.playing = false;
+                    const title = document.getElementById(`${type}-title`);
+                    const artist = document.getElementById(`${type}-artist`);
+                    if (title) title.innerHTML = 'Nube vacía';
+                    if (artist) artist.innerHTML = 'No hay archivos en la Nube';
+                    const wheel = document.getElementById(`${type}-wheel_play`);
+                    if (wheel) wheel.innerHTML = '<i class="fa fa-play"></i>';
+                }
+            } else {
+                if (state.allMedia.length > 0) {
+                    const index = Math.min(
+                        Math.max(Number(state.index) || 0, 0),
+                        state.allMedia.length - 1
+                    );
+                    player.loadTrack(index);
+                    player.play();
+                } else {
+                    state.playing = false;
+                    const title = document.getElementById(`${type}-title`);
+                    const artist = document.getElementById(`${type}-artist`);
+                    if (title) title.innerHTML = 'Carpeta vacía';
+                    if (artist) artist.innerHTML = type === 'mp3'
+                        ? 'No hay canciones cargadas'
+                        : 'No hay videos cargados';
+                    const wheel = document.getElementById(`${type}-wheel_play`);
+                    if (wheel) wheel.innerHTML = '<i class="fa fa-play"></i>';
+                }
+            }
         }
 
         function toggleLock(type) {
@@ -1597,7 +1678,16 @@
             const state = players[type].getState();
             const item = state.cloudMedia[index];
             if (!item) return;
+
+            state.source = 'cloud';
             state.cloudIndex = index;
+
+            const switchEl = document.getElementById(`${type}-source_switch`);
+            if (switchEl) {
+                switchEl.classList.add('active-cloud');
+                switchEl.classList.remove('active-local');
+            }
+
             playCloudTrack(type, item);
         }
 
