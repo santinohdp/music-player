@@ -171,6 +171,7 @@
             height: 250px;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .mp4-player .lcd-inner { background: radial-gradient(ellipse at center, #232629 0%, #0c0d0f 100%); }
@@ -245,6 +246,24 @@
             z-index: 5;
         }
         .fullscreen-btn:hover { background: rgba(0,0,0,0.8); }
+
+        /* Modo expandido: el video ocupa toda la pantalla LCD del reproductor (tapa el azul y el padding) */
+        #mp4-view-video.video-expanded .now-line,
+        #mp4-view-video.video-expanded .now-title,
+        #mp4-view-video.video-expanded .duration {
+            display: none;
+        }
+        #mp4-view-video.video-expanded {
+            position: absolute;
+            inset: -10px;
+            margin: 0;
+            z-index: 10;
+            background: #000;
+        }
+        #mp4-view-video.video-expanded .video-frame {
+            border-radius: 0;
+            height: 100%;
+        }
 
         /* --- ajustes / carpeta --- */
         .setting-block { margin-bottom: 8px; flex-shrink: 0; }
@@ -979,7 +998,7 @@
 
             function brightnessChange() {
                 const b = el('brightness');
-                const target = isVideo ? el('track_image') : document.querySelector(`#${type}-player .lcd`);
+                const target = document.querySelector(`#${type}-player .lcd`);
                 if (!b || !target) return;
                 target.style.filter = `brightness(${b.value}%)`;
                 el('brightness_show').innerHTML = `${b.value}%`;
@@ -1297,17 +1316,12 @@
             renderBookList();
         }
 
-        // ===== PANTALLA COMPLETA (video) =====
+        // ===== EXPANDIR VIDEO A TODA LA PANTALLA DEL REPRODUCTOR (no del navegador) =====
         function toggleFullscreen() {
-            const video = document.getElementById('mp4-track_image');
-            if (!video) return;
-            if (document.fullscreenElement || document.webkitFullscreenElement) {
-                (document.exitFullscreen || document.webkitExitFullscreen).call(document);
-                return;
-            }
-            if (video.requestFullscreen) video.requestFullscreen();
-            else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-            else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen(); // iOS Safari
+            const view = document.getElementById('mp4-view-video');
+            const btn = document.querySelector('#mp4-view-video .fullscreen-btn i');
+            const expanded = view.classList.toggle('video-expanded');
+            btn.className = expanded ? 'fa fa-compress' : 'fa fa-expand';
         }
 
         // ===== SELECTOR DE MODO =====
