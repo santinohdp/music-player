@@ -989,8 +989,8 @@
             }
 
             function justPlay() {
-                if (state.allMedia.length === 0) {
-                    alert(`Por favor, carga archivos de ${isVideo ? 'video' : 'música'} primero`);
+                if (state.allMedia.length === 0 && !state.media.src) {
+                    alert(`Por favor, carga archivos de ${isVideo ? 'video' : 'música'} primero, o elegí uno de la Nube`);
                     return;
                 }
                 state.playing ? pause() : play();
