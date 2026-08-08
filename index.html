@@ -87,46 +87,24 @@
             cursor: pointer;
         }
 
-        input[type="range"]::-webkit-slider-runnable-track {
-            height: 6px;
-            border-radius: 10px;
-            background: transparent;
-        }
-
+        input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 10px; background: transparent; }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 14px;
-            width: 14px;
-            margin-top: -4px;
-            border-radius: 50%;
-            background: #148F77;
-            cursor: pointer;
+            height: 14px; width: 14px; margin-top: -4px;
+            border-radius: 50%; background: #148F77; cursor: pointer;
         }
+        input[type="range"]::-moz-range-track { height: 6px; border-radius: 10px; background: transparent; }
+        input[type="range"]::-moz-range-thumb { height: 14px; width: 14px; border-radius: 50%; background: #148F77; border: none; cursor: pointer; }
 
-        input[type="range"]::-moz-range-track {
-            height: 6px;
-            border-radius: 10px;
-            background: transparent;
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            height: 14px;
-            width: 14px;
-            border-radius: 50%;
-            background: #148F77;
-            border: none;
-            cursor: pointer;
-        }
-
-        /* ===================== MP3 - "REPRODUCTOR FISICO" LCD RETRO ===================== */
-        .mp3-wrap {
+        /* ===================== CARCASA COMUN (MP3 y MP4) ===================== */
+        .device-wrap {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 14px;
         }
 
-        .mp3-wrap .top-bar {
+        .device-wrap .top-bar {
             width: 320px;
             display: flex;
             align-items: center;
@@ -142,18 +120,19 @@
             cursor: pointer;
             font-size: 14px;
         }
-
         .back-btn:hover { background: rgba(255,255,255,0.3); }
         .top-bar span { color: #ccc; font-size: 18px; }
 
-        /* Carcasa del reproductor: bezel rojo/negro como el dispositivo real */
         .device {
             width: 320px;
             background: linear-gradient(160deg, #a5271f, #6e1712);
             border-radius: 26px;
             padding: 10px 10px 22px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6),
-                        inset 0 0 0 2px rgba(255,255,255,0.08);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.08);
+        }
+
+        .mp4-player .device {
+            background: linear-gradient(160deg, #2c2c2e, #111113);
         }
 
         .device-brand {
@@ -165,8 +144,8 @@
             text-transform: uppercase;
             opacity: 0.85;
         }
+        .mp4-player .device-brand { color: #cfd8e3; }
 
-        /* Pantalla LCD azul - TAMAÑO FIJO */
         .lcd {
             background: #0a1f33;
             border: 3px solid #030c15;
@@ -181,13 +160,7 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: repeating-linear-gradient(
-                to bottom,
-                rgba(255,255,255,0.03) 0px,
-                rgba(255,255,255,0.03) 1px,
-                transparent 1px,
-                transparent 3px
-            );
+            background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 3px);
             pointer-events: none;
         }
 
@@ -200,7 +173,8 @@
             flex-direction: column;
         }
 
-        /* Fila de iconos tipo menu del dispositivo */
+        .mp4-player .lcd-inner { background: radial-gradient(ellipse at center, #232629 0%, #0c0d0f 100%); }
+
         .icon-menu {
             display: flex;
             justify-content: space-around;
@@ -225,70 +199,46 @@
             align-items: center;
             gap: 3px;
         }
-
         .icon-menu button i { font-size: 18px; }
         .icon-menu button.active { background: #bfe8ff; color: #0a1f33; font-weight: bold; }
 
-        .lcd-view {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-        }
-
+        .lcd-view { display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; overflow-y: auto; }
         .lcd-view::-webkit-scrollbar { width: 4px; }
         .lcd-view::-webkit-scrollbar-thumb { background: #bfe8ff; border-radius: 5px; }
 
-        /* --- Vista reproductor --- */
+        /* --- reproductor (musica / video) --- */
         .now-line {
-            display: flex;
-            justify-content: space-between;
-            font-size: 15px;
-            border-bottom: 1px dashed rgba(191,232,255,0.3);
-            padding-bottom: 6px;
-            flex-shrink: 0;
+            display: flex; justify-content: space-between; font-size: 15px;
+            border-bottom: 1px dashed rgba(191,232,255,0.3); padding-bottom: 6px; flex-shrink: 0;
         }
-
-        .now-title {
-            font-size: 22px;
-            line-height: 1.1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-top: 4px;
-        }
-
+        .now-title { font-size: 22px; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px; }
         .now-sub { font-size: 14px; opacity: 0.8; margin-bottom: 4px; }
-
         .lcd .duration { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
         .lcd .duration input[type="range"] { height: 4px; }
         .lcd .duration input[type="range"]::-webkit-slider-thumb { background: #bfe8ff; height: 10px; width: 10px; margin-top: -3px; }
 
-        /* --- Vista ajustes / carpeta --- */
-        .setting-block { margin-bottom: 8px; flex-shrink: 0; }
-        .setting-label {
+        .video-frame {
+            width: 100%;
+            flex: 1;
+            min-height: 0;
+            background: #000;
+            border-radius: 3px;
+            overflow: hidden;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 15px;
-            margin-bottom: 4px;
+            justify-content: center;
         }
-        .setting-label .value { margin-left: auto; opacity: 0.75; }
+        .video-frame video { width: 100%; height: 100%; object-fit: contain; }
 
+        /* --- ajustes / carpeta --- */
+        .setting-block { margin-bottom: 8px; flex-shrink: 0; }
+        .setting-label { display: flex; align-items: center; gap: 8px; font-size: 15px; margin-bottom: 4px; }
+        .setting-label .value { margin-left: auto; opacity: 0.75; }
         .eq-block { display: flex; gap: 10px; }
         .eq-col { flex: 1; text-align: center; }
         .eq-col span { font-size: 13px; display: block; margin-bottom: 3px; }
 
-        .folder-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 15px;
-            flex-shrink: 0;
-        }
-
+        .folder-header { display: flex; align-items: center; justify-content: space-between; font-size: 15px; flex-shrink: 0; }
         .folder-actions { display: flex; gap: 6px; }
         .folder-actions label, .folder-actions button {
             background: rgba(191,232,255,0.15);
@@ -302,316 +252,148 @@
         }
         .folder-actions input { display: none; }
 
-        .song-list, .radio-list {
-            margin-top: 6px;
+        .song-list, .radio-list, .book-list {
+            margin-top: 6px; flex: 1; min-height: 0; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 3px;
+        }
+        .song-list::-webkit-scrollbar, .radio-list::-webkit-scrollbar, .book-list::-webkit-scrollbar { width: 4px; }
+        .song-list::-webkit-scrollbar-thumb, .radio-list::-webkit-scrollbar-thumb, .book-list::-webkit-scrollbar-thumb { background: #bfe8ff; border-radius: 5px; }
+
+        .song-item, .radio-item, .book-item {
+            display: flex; align-items: center; gap: 8px; padding: 5px 6px;
+            font-size: 15px; cursor: pointer; border-radius: 2px; flex-shrink: 0;
+        }
+        .song-item:hover, .radio-item:hover, .book-item:hover { background: rgba(191,232,255,0.15); }
+        .song-item.active, .radio-item.active { background: rgba(191,232,255,0.3); font-weight: bold; }
+        .song-item .song-name, .radio-item .radio-name, .book-item .book-name {
+            flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .book-item .book-trash { opacity: 0.7; padding: 2px 6px; }
+        .book-item .book-trash:hover { opacity: 1; color: #ff8080; }
+        .song-list-empty { font-size: 14px; opacity: 0.7; padding: 8px 0; }
+
+        /* --- radio --- */
+        .radio-now {
+            text-align: center; font-size: 15px; border-bottom: 1px dashed rgba(191,232,255,0.3);
+            padding-bottom: 5px; flex-shrink: 0;
+        }
+        .radio-now .radio-station-name { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .radio-play-row { display: flex; justify-content: center; flex-shrink: 0; }
+        .radio-play-row button {
+            background: none; border: 2px solid #bfe8ff; color: #bfe8ff;
+            border-radius: 50%; width: 32px; height: 32px; font-size: 14px; cursor: pointer;
+        }
+        .radio-add { display: flex; gap: 5px; flex-shrink: 0; }
+        .radio-add input {
+            flex: 1; background: rgba(191,232,255,0.08); border: 1px solid rgba(191,232,255,0.35);
+            color: #bfe8ff; font-family: 'VT323', monospace; font-size: 14px; padding: 5px 6px; border-radius: 3px;
+        }
+        .radio-add button {
+            background: rgba(191,232,255,0.15); border: 1px solid rgba(191,232,255,0.4); color: #bfe8ff;
+            font-family: 'VT323', monospace; padding: 5px 10px; border-radius: 3px; cursor: pointer;
+        }
+
+        /* --- pantalla de inicio MP4: grilla de iconos tipo dispositivo --- */
+        .home-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            align-content: center;
+        }
+        .home-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: #dfe9f5;
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+        }
+        .home-icon .icon-box {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #fff;
+        }
+        .home-icon.icon-video .icon-box { background: linear-gradient(160deg,#4facfe,#3a7bd5); }
+        .home-icon.icon-ebook .icon-box { background: linear-gradient(160deg,#f6b26b,#c9791a); }
+        .home-icon.icon-ajustes .icon-box { background: linear-gradient(160deg,#8e8e93,#4a4a4d); }
+
+        /* --- ebook: lector --- */
+        .reader-header {
+            display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; font-size: 14px;
+        }
+        .reader-header .font-btns { display: flex; gap: 4px; }
+        .reader-header .font-btns button {
+            background: rgba(191,232,255,0.15); border: 1px solid rgba(191,232,255,0.4); color: #bfe8ff;
+            width: 22px; height: 22px; border-radius: 3px; cursor: pointer; font-size: 12px;
+        }
+        .reader-text {
             flex: 1;
             min-height: 0;
             overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .song-list::-webkit-scrollbar, .radio-list::-webkit-scrollbar { width: 4px; }
-        .song-list::-webkit-scrollbar-thumb, .radio-list::-webkit-scrollbar-thumb { background: #bfe8ff; border-radius: 5px; }
-
-        .song-item, .radio-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 5px 6px;
-            font-size: 15px;
-            cursor: pointer;
-            border-radius: 2px;
-            flex-shrink: 0;
-        }
-
-        .song-item:hover, .radio-item:hover { background: rgba(191,232,255,0.15); }
-        .song-item.active, .radio-item.active { background: rgba(191,232,255,0.3); font-weight: bold; }
-
-        .song-item .song-name, .radio-item .radio-name {
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .song-list-empty { font-size: 14px; opacity: 0.7; padding: 8px 0; }
-
-        /* --- Vista radio --- */
-        .radio-now {
-            text-align: center;
-            font-size: 15px;
-            border-bottom: 1px dashed rgba(191,232,255,0.3);
-            padding-bottom: 5px;
-            flex-shrink: 0;
-        }
-
-        .radio-now .radio-station-name {
-            font-size: 17px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .radio-play-row { display: flex; justify-content: center; flex-shrink: 0; }
-
-        .radio-play-row button {
-            background: none;
-            border: 2px solid #bfe8ff;
-            color: #bfe8ff;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .radio-add {
-            display: flex;
-            gap: 5px;
-            flex-shrink: 0;
-        }
-
-        .radio-add input {
-            flex: 1;
-            background: rgba(191,232,255,0.08);
-            border: 1px solid rgba(191,232,255,0.35);
-            color: #bfe8ff;
-            font-family: 'VT323', monospace;
-            font-size: 14px;
-            padding: 5px 6px;
+            background: rgba(0,0,0,0.15);
             border-radius: 3px;
+            padding: 8px;
+            margin-top: 6px;
+            font-family: Georgia, 'Times New Roman', serif;
+            color: #eaf4ff;
+            line-height: 1.5;
+            white-space: pre-wrap;
         }
+        .reader-text::-webkit-scrollbar { width: 4px; }
+        .reader-text::-webkit-scrollbar-thumb { background: #bfe8ff; border-radius: 5px; }
 
-        .radio-add button {
-            background: rgba(191,232,255,0.15);
-            border: 1px solid rgba(191,232,255,0.4);
-            color: #bfe8ff;
-            font-family: 'VT323', monospace;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        /* Rueda de control estilo dispositivo (unicos controles de reproduccion) */
+        /* --- rueda de control --- */
         .wheel {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
+            width: 110px; height: 110px; border-radius: 50%;
             background: radial-gradient(circle at 35% 30%, #4a4a4a, #1c1c1c 70%);
-            margin: 16px auto 0;
-            position: relative;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            margin: 16px auto 0; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
-
-        .wheel button {
-            position: absolute;
-            background: none;
-            border: none;
-            color: #ddd;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
+        .wheel button { position: absolute; background: none; border: none; color: #ddd; font-size: 14px; cursor: pointer; }
         .wheel .w-center {
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 46px; height: 46px;
-            border-radius: 50%;
-            background: #2b2b2b;
-            box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
-            font-size: 16px;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 46px; height: 46px; border-radius: 50%; background: #2b2b2b;
+            box-shadow: inset 0 0 6px rgba(0,0,0,0.6); font-size: 16px;
         }
-        .wheel .w-up { top: 8px; left: 50%; transform: translateX(-50%); }
+        .wheel .w-up { top: 8px; left: 50%; transform: translateX(-50%); font-size: 11px; letter-spacing: 1px; }
         .wheel .w-down { bottom: 8px; left: 50%; transform: translateX(-50%); }
         .wheel .w-left { left: 8px; top: 50%; transform: translateY(-50%); }
         .wheel .w-right { right: 8px; top: 50%; transform: translateY(-50%); }
 
-        /* Menu emergente de cancion */
+        /* Menu emergente de item (cancion / libro) */
         .song-menu-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            z-index: 500;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            display: flex; align-items: flex-end; justify-content: center; z-index: 500;
         }
-
         .song-menu {
-            width: 100%;
-            max-width: 340px;
-            background: #232427;
-            border-radius: 18px 18px 0 0;
-            padding: 20px;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.4);
+            width: 100%; max-width: 340px; background: #232427;
+            border-radius: 18px 18px 0 0; padding: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.4);
         }
-
         .song-menu h3 {
-            color: #fff;
-            font-size: 16px;
-            margin-bottom: 15px;
-            text-align: center;
-            text-transform: capitalize;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            color: #fff; font-size: 16px; margin-bottom: 15px; text-align: center;
+            text-transform: capitalize; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-
         .song-menu button {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 8px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            justify-content: center;
+            width: 100%; padding: 12px; margin-bottom: 8px; border: none; border-radius: 10px;
+            font-size: 14px; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 10px; justify-content: center;
         }
-
         .song-menu .btn-play { background: #148F77; }
+        .mp4-player .song-menu .btn-play { background: #1A5276; }
         .song-menu .btn-delete { background: #c0392b; }
         .song-menu .btn-cancel { background: rgba(255,255,255,0.1); }
 
-        /* ===================== MP4 (sin cambios por ahora) ===================== */
-        .main {
-            position: relative;
-            min-height: 80vh;
-            width: 80%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #232427;
-            border-radius: 8px;
-            box-shadow: inset 5px 5px 5px rgba(0,0,0,0.2),
-                        inset -5px -5px 15px rgba(255,255,255,0.1),
-                        5px 5px 15px rgba(0,0,0,0.3),
-                        -5px -5px 15px rgba(255,255,255,0.1);
-        }
-
-        .main #logo { position: absolute; top: 10px; left: 30px; font-size: 25px; color: #ccc; }
-        .main #logo i { margin-right: 15px; }
-
-        .file-upload { position: absolute; top: 10px; right: 160px; }
-        .file-upload label {
-            padding: 8px 15px;
-            background: #148F77;
-            color: #fff;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .file-upload input { display: none; }
-
-        .clear-all { position: absolute; top: 10px; right: 80px; }
-        .clear-all button {
-            padding: 8px 15px;
-            background: #c0392b;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .mp4-player .back-btn { position: absolute; top: 10px; left: 30px; }
-
-        .mp4-player .left {
-            width: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-
-        .mp4-player .left video {
-            height: 300px;
-            width: 80%;
-            border-radius: 15px;
-            object-fit: cover;
-            background: #000;
-            padding: 5px;
-        }
-
-        .mp4-player .volume {
-            margin-top: 25px;
-            width: 80%;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-        }
-
-        .mp4-player .volume input[type="range"] { flex: 1; margin: 0 15px; }
-        .mp4-player .volume span.vshow { padding: 8px 12px; background: rgba(245,245,245,0.1); }
-        .mp4-player .volume i { cursor: pointer; padding: 8px 12px; background: #1A5276; }
-
-        .mp4-player .right {
-            width: 50%;
-            padding: 10px 0;
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .mp4-player .song_detail { width: 80%; text-align: center; margin-bottom: 6.5em; }
-        .mp4-player .song_detail .title { color: #fff; font-size: 35px; text-transform: capitalize; }
-        .mp4-player .song_detail .artist { color: #fff; font-size: 18px; margin-top: 5px; }
-
-        .mp4-player .middle { width: 100%; display: flex; align-items: center; justify-content: center; }
-        .mp4-player .middle button {
-            border: none;
-            height: 70px;
-            width: 70px;
-            margin: 0 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            background: #232427;
-            box-shadow: inset 5px 5px 5px rgba(0,0,0,0.2), inset -5px -5px 15px rgba(255,255,255,0.1);
-        }
-        .mp4-player .play-btn { background: #1A5276; }
-        .mp4-player .right button:hover { background: #1A5276; }
-        .mp4-player i:before { color: #fff; font-size: 20px; }
-
-        .mp4-player .duration { margin-top: 3em; width: 80%; display: flex; align-items: center; }
-        .mp4-player .duration input[type="range"] { flex: 1; margin: 0 15px; }
-        .mp4-player .auto-btn {
-            font-size: 15px;
-            cursor: pointer;
-            border: none;
-            padding: 5px 7px;
-            color: #fff;
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
-        }
-
-        .mp4-player .show_song_no {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 8px 12px;
-            color: #fff;
-            border-radius: 5px;
-            background: rgba(255,255,255,0.2);
-            display: flex;
-        }
-        .mp4-player .show_song_no p:nth-child(2) { margin: 0 5px; }
-
-        @media(max-width: 700px) {
-            .main { min-height: 100vh; width: 100%; flex-direction: column; }
-            .mp4-player .right, .mp4-player .left { width: 90%; margin-top: 30px; }
-            .mp4-player .left video { min-width: 90%; height: 220px; }
-        }
-
         @media(max-width: 500px) {
             .mode-buttons { flex-direction: column; }
-            .device, .mp3-wrap .top-bar { width: 92vw; max-width: 340px; }
+            .device, .device-wrap .top-bar { width: 92vw; max-width: 340px; }
         }
     </style>
 </head>
@@ -634,8 +416,8 @@
         </div>
     </div>
 
-    <!-- ===== REPRODUCTOR MP3 (estilo LCD retro) ===== -->
-    <div class="mp3-wrap hidden" id="mp3-player">
+    <!-- ===== REPRODUCTOR MP3 ===== -->
+    <div class="device-wrap hidden" id="mp3-player">
         <div class="top-bar">
             <button class="back-btn" onclick="goBack('mp3')"><i class="fa fa-arrow-left"></i> Volver</button>
             <span><i class="fa fa-music"></i> MP3</span>
@@ -643,71 +425,52 @@
 
         <div class="device">
             <p class="device-brand">SPORT · TUNE</p>
-
             <div class="lcd">
                 <div class="lcd-inner">
 
-                    <!-- Menu de iconos: cambia entre vistas -->
                     <div class="icon-menu">
                         <button class="active" id="mp3-tab-player" onclick="setView('mp3','player')"><i class="fa fa-music"></i>Música</button>
                         <button id="mp3-tab-radio" onclick="setView('mp3','radio')"><i class="fa fa-rss"></i>Radio</button>
                         <button id="mp3-tab-ajustes" onclick="setView('mp3','ajustes')"><i class="fa fa-cog"></i>Ajustes</button>
                     </div>
 
-                    <!-- Vista: reproductor (sin botones propios, se controla con la ruedita) -->
                     <div class="lcd-view" id="mp3-view-player">
-                        <div class="now-line">
-                            <span>MP3</span>
-                            <span id="mp3-bitrate">192</span>
-                        </div>
+                        <div class="now-line"><span>MP3</span><span id="mp3-bitrate">192</span></div>
                         <p class="now-sub" id="mp3-artist">Selecciona archivos de música</p>
                         <p class="now-title" id="mp3-title">Carga tus canciones</p>
-
                         <div class="duration">
                             <input type="range" min="0" max="100" value="0" id="mp3-duration_slider" onchange="changeDuration('mp3')">
                         </div>
                         <button id="mp3-play" class="hidden"><i class="fa fa-play"></i></button>
                     </div>
 
-                    <!-- Vista: radio -->
                     <div class="lcd-view hidden" id="mp3-view-radio">
                         <div class="radio-now">
                             <div>RADIO ARGENTINA</div>
                             <div class="radio-station-name" id="mp3-radio_now">Ninguna emisora seleccionada</div>
                         </div>
-
                         <div class="radio-play-row">
                             <button id="mp3-radio_play" onclick="toggleRadio('mp3')"><i class="fa fa-play"></i></button>
                         </div>
-
                         <div class="radio-list" id="mp3-radio_list"></div>
-
                         <div class="radio-add">
                             <input type="text" id="mp3-radio_url_input" placeholder="URL de stream (http...)">
                             <button onclick="addRadioStation('mp3')">+</button>
                         </div>
                     </div>
 
-                    <!-- Vista: ajustes -->
                     <div class="lcd-view hidden" id="mp3-view-ajustes">
                         <div class="setting-block">
                             <div class="setting-label">
                                 <i class="fa fa-volume-up" onclick="muteSound('mp3')" id="mp3-volume_icon"></i>
-                                Volumen
-                                <span class="value" id="mp3-volume_show">90</span>
+                                Volumen <span class="value" id="mp3-volume_show">90</span>
                             </div>
                             <input type="range" min="0" max="100" value="90" onchange="volumeChange('mp3')" id="mp3-volume">
                         </div>
-
                         <div class="setting-block">
-                            <div class="setting-label">
-                                <i class="fa fa-sun-o"></i>
-                                Brillo
-                                <span class="value" id="mp3-brightness_show">100%</span>
-                            </div>
+                            <div class="setting-label"><i class="fa fa-sun-o"></i> Brillo <span class="value" id="mp3-brightness_show">100%</span></div>
                             <input type="range" min="40" max="160" value="100" oninput="brightnessChange('mp3')" id="mp3-brightness">
                         </div>
-
                         <div class="setting-block">
                             <div class="setting-label"><i class="fa fa-sliders"></i> Ecualizador</div>
                             <div class="eq-block">
@@ -721,7 +484,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="setting-block" style="flex:1; min-height:0; display:flex; flex-direction:column;">
                             <div class="folder-header">
                                 <span><i class="fa fa-folder-open"></i> Carpeta (<span id="mp3-total">0</span>)</span>
@@ -731,16 +493,13 @@
                                     <button onclick="clearAllMedia('mp3')"><i class="fa fa-trash"></i></button>
                                 </div>
                             </div>
-                            <div class="song-list" id="mp3-song_list">
-                                <p class="song-list-empty">No hay canciones cargadas todavía</p>
-                            </div>
+                            <div class="song-list" id="mp3-song_list"><p class="song-list-empty">No hay canciones cargadas todavía</p></div>
                         </div>
                     </div>
 
                 </div>
             </div>
 
-            <!-- Rueda de navegacion: UNICO control de reproduccion -->
             <div class="wheel">
                 <button class="w-up" onclick="volumeStep('mp3', 5)"><i class="fa fa-chevron-up"></i></button>
                 <button class="w-down" onclick="volumeStep('mp3', -5)"><i class="fa fa-chevron-down"></i></button>
@@ -751,7 +510,6 @@
         </div>
     </div>
 
-    <!-- Menu emergente de cancion (mp3) -->
     <div class="song-menu-overlay hidden" id="mp3-song_menu_overlay" onclick="closeSongMenu('mp3', event)">
         <div class="song-menu" onclick="event.stopPropagation()">
             <h3 id="mp3-menu_song_name">Canción</h3>
@@ -761,55 +519,117 @@
         </div>
     </div>
 
-    <!-- ===== REPRODUCTOR MP4 (sin cambios, lo vemos despues) ===== -->
-    <div class="main mp4-player hidden" id="mp4-player">
-        <button class="back-btn" onclick="goBack('mp4')"><i class="fa fa-arrow-left"></i> Volver</button>
-        <p id="logo"><i class="fa fa-video-camera"></i>MP4</p>
-
-        <div class="file-upload">
-            <label for="mp4-file-input">
-                <i class="fa fa-folder-open"></i> Agregar Video
-            </label>
-            <input type="file" id="mp4-file-input" accept="video/*" multiple>
+    <!-- ===== REPRODUCTOR MP4 (menu de inicio con iconos: Video / Ebook / Ajustes) ===== -->
+    <div class="device-wrap mp4-player hidden" id="mp4-player">
+        <div class="top-bar">
+            <button class="back-btn" onclick="goBack('mp4')"><i class="fa fa-arrow-left"></i> Volver</button>
+            <span><i class="fa fa-video-camera"></i> MP4</span>
         </div>
 
-        <div class="clear-all">
-            <button onclick="clearAllMedia('mp4')">
-                <i class="fa fa-trash"></i> Borrar Todo
-            </button>
-        </div>
+        <div class="device">
+            <p class="device-brand">MEDIA PLAYER</p>
+            <div class="lcd">
+                <div class="lcd-inner">
 
-        <div class="show_song_no">
-            <p id="mp4-present">0</p>
-            <p>/</p>
-            <p id="mp4-total">0</p>
-        </div>
+                    <!-- Vista: inicio (grilla de iconos) -->
+                    <div class="lcd-view" id="mp4-view-home">
+                        <div class="home-grid">
+                            <button class="home-icon icon-video" onclick="setMp4View('video')">
+                                <span class="icon-box"><i class="fa fa-play"></i></span>Video
+                            </button>
+                            <button class="home-icon icon-ebook" onclick="setMp4View('ebook')">
+                                <span class="icon-box"><i class="fa fa-book"></i></span>Ebook
+                            </button>
+                            <button class="home-icon icon-ajustes" onclick="setMp4View('ajustes')">
+                                <span class="icon-box"><i class="fa fa-cog"></i></span>Ajustes
+                            </button>
+                        </div>
+                    </div>
 
-        <div class="left">
-            <video id="mp4-track_image"></video>
-            <div class="volume">
-                <span class="vshow" id="mp4-volume_show">90</span>
-                <i class="fa fa-volume-up" aria-hidden="true" onclick="muteSound('mp4')" id="mp4-volume_icon"></i>
-                <input type="range" min="0" max="100" value="90" onchange="volumeChange('mp4')" id="mp4-volume">
+                    <!-- Vista: video -->
+                    <div class="lcd-view hidden" id="mp4-view-video">
+                        <div class="now-line"><span>VIDEO</span><span id="mp4-present">0</span>/<span id="mp4-total_top">0</span></div>
+                        <div class="video-frame"><video id="mp4-track_image"></video></div>
+                        <p class="now-title" id="mp4-title" style="font-size:16px;">Carga tus videos</p>
+                        <div class="duration">
+                            <input type="range" min="0" max="100" value="0" id="mp4-duration_slider" onchange="changeDuration('mp4')">
+                        </div>
+                        <p class="now-sub hidden" id="mp4-artist"></p>
+                        <button id="mp4-play" class="hidden"><i class="fa fa-play"></i></button>
+                    </div>
+
+                    <!-- Vista: ebook -->
+                    <div class="lcd-view hidden" id="mp4-view-ebook">
+                        <!-- lista de libros -->
+                        <div id="mp4-book_list_wrap" style="flex:1; min-height:0; display:flex; flex-direction:column;">
+                            <div class="folder-header">
+                                <span><i class="fa fa-book"></i> Libros (<span id="mp4-book_total">0</span>)</span>
+                                <div class="folder-actions">
+                                    <label for="mp4-book-input"><i class="fa fa-plus"></i></label>
+                                    <input type="file" id="mp4-book-input" accept=".txt,text/plain" multiple>
+                                    <button onclick="clearAllBooks()"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="book-list" id="mp4-book_list"><p class="song-list-empty">No hay libros cargados (solo .txt)</p></div>
+                        </div>
+                        <!-- lector -->
+                        <div id="mp4-reader_wrap" class="hidden" style="flex:1; min-height:0; display:flex; flex-direction:column;">
+                            <div class="reader-header">
+                                <span id="mp4-reader_title">Libro</span>
+                                <div class="font-btns">
+                                    <button onclick="changeFontSize(-2)">A-</button>
+                                    <button onclick="changeFontSize(2)">A+</button>
+                                    <button onclick="closeReader()"><i class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                            <div class="reader-text" id="mp4-reader_text"></div>
+                        </div>
+                    </div>
+
+                    <!-- Vista: ajustes -->
+                    <div class="lcd-view hidden" id="mp4-view-ajustes">
+                        <div class="setting-block">
+                            <div class="setting-label">
+                                <i class="fa fa-volume-up" onclick="muteSound('mp4')" id="mp4-volume_icon"></i>
+                                Volumen <span class="value" id="mp4-volume_show">90</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="90" onchange="volumeChange('mp4')" id="mp4-volume">
+                        </div>
+                        <div class="setting-block">
+                            <div class="setting-label"><i class="fa fa-sun-o"></i> Brillo <span class="value" id="mp4-brightness_show">100%</span></div>
+                            <input type="range" min="40" max="160" value="100" oninput="brightnessChange('mp4')" id="mp4-brightness">
+                        </div>
+                        <div class="setting-block" style="flex:1; min-height:0; display:flex; flex-direction:column;">
+                            <div class="folder-header">
+                                <span><i class="fa fa-folder-open"></i> Carpeta (<span id="mp4-total">0</span>)</span>
+                                <div class="folder-actions">
+                                    <label for="mp4-file-input"><i class="fa fa-plus"></i></label>
+                                    <input type="file" id="mp4-file-input" accept="video/*" multiple>
+                                    <button onclick="clearAllMedia('mp4')"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="song-list" id="mp4-song_list"><p class="song-list-empty">No hay videos cargados todavía</p></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="wheel">
+                <button class="w-up" onclick="goHome('mp4')">MENÚ</button>
+                <button class="w-left" onclick="wheelPrev('mp4')"><i class="fa fa-chevron-left"></i></button>
+                <button class="w-right" onclick="wheelNext('mp4')"><i class="fa fa-chevron-right"></i></button>
+                <button class="w-center" id="mp4-wheel_play" onclick="wheelPlayPause('mp4')"><i class="fa fa-play"></i></button>
             </div>
         </div>
+    </div>
 
-        <div class="right">
-            <div class="song_detail">
-                <p class="title" id="mp4-title">Carga tus videos</p>
-                <p class="artist" id="mp4-artist">Selecciona archivos de video</p>
-            </div>
-
-            <div class="middle">
-                <button onclick="previousMedia('mp4')" id="mp4-pre"><i class="fa fa-step-backward" aria-hidden="true"></i></button>
-                <button onclick="justPlay('mp4')" class="play-btn" id="mp4-play"><i class="fa fa-play" aria-hidden="true"></i></button>
-                <button onclick="nextMedia('mp4')" id="mp4-next"><i class="fa fa-step-forward" aria-hidden="true"></i></button>
-            </div>
-
-            <div class="duration">
-                <input type="range" min="0" max="100" value="0" id="mp4-duration_slider" onchange="changeDuration('mp4')">
-                <button class="auto-btn" id="mp4-auto" onclick="autoplaySwitch('mp4')">Auto &nbsp;<i class="fa fa-circle-o-notch" aria-hidden="true"></i></button>
-            </div>
+    <div class="song-menu-overlay hidden" id="mp4-song_menu_overlay" onclick="closeSongMenu('mp4', event)">
+        <div class="song-menu" onclick="event.stopPropagation()">
+            <h3 id="mp4-menu_song_name">Video</h3>
+            <button class="btn-play" onclick="playFromMenu('mp4')"><i class="fa fa-play"></i> Reproducir</button>
+            <button class="btn-delete" onclick="deleteFromMenu('mp4')"><i class="fa fa-trash"></i> Eliminar</button>
+            <button class="btn-cancel" onclick="closeSongMenu('mp4')"><i class="fa fa-times"></i> Cancelar</button>
         </div>
     </div>
 
@@ -831,7 +651,6 @@
             });
         }
 
-        // ===== EMISORAS DE RADIO DE ARGENTINA (AM/FM online) =====
         const RADIO_PRESETS = [
             { name: 'Radio Madre 530 AM', url: 'http://cdn.instream.audio:9288/stream' },
             { name: 'Radio Argentina 570 AM', url: 'https://server.laradio.online:15224/live.mp3' },
@@ -858,7 +677,7 @@
 
         // ===== INDEXEDDB =====
         const DB_NAME = 'MusicPlayerDB';
-        const DB_VERSION = 2;
+        const DB_VERSION = 3;
         let db;
 
         function initDB() {
@@ -868,12 +687,9 @@
                 request.onsuccess = () => { db = request.result; resolve(db); };
                 request.onupgradeneeded = (event) => {
                     db = event.target.result;
-                    if (!db.objectStoreNames.contains('songs')) {
-                        db.createObjectStore('songs', { keyPath: 'id', autoIncrement: true });
-                    }
-                    if (!db.objectStoreNames.contains('videos')) {
-                        db.createObjectStore('videos', { keyPath: 'id', autoIncrement: true });
-                    }
+                    if (!db.objectStoreNames.contains('songs')) db.createObjectStore('songs', { keyPath: 'id', autoIncrement: true });
+                    if (!db.objectStoreNames.contains('videos')) db.createObjectStore('videos', { keyPath: 'id', autoIncrement: true });
+                    if (!db.objectStoreNames.contains('ebooks')) db.createObjectStore('ebooks', { keyPath: 'id', autoIncrement: true });
                 };
             });
         }
@@ -886,7 +702,6 @@
                 req.onerror = () => reject(req.error);
             });
         }
-
         function loadFromDB(storeName) {
             return new Promise((resolve, reject) => {
                 const tx = db.transaction([storeName], 'readonly');
@@ -895,7 +710,6 @@
                 req.onerror = () => reject(req.error);
             });
         }
-
         function clearDB(storeName) {
             return new Promise((resolve, reject) => {
                 const tx = db.transaction([storeName], 'readwrite');
@@ -904,7 +718,6 @@
                 req.onerror = () => reject(req.error);
             });
         }
-
         function deleteOneFromDB(storeName, dbId) {
             return new Promise((resolve, reject) => {
                 const tx = db.transaction([storeName], 'readwrite');
@@ -922,7 +735,6 @@
                 reader.readAsDataURL(blob);
             });
         }
-
         function base64ToBlob(base64) {
             const parts = base64.split(';base64,');
             const contentType = parts[0].split(':')[1];
@@ -931,6 +743,17 @@
             for (let i = 0; i < raw.length; ++i) uInt8Array[i] = raw.charCodeAt(i);
             return new Blob([uInt8Array], { type: contentType });
         }
+        function readFileAsText(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsText(file);
+            });
+        }
+
+        // Lista de todos los AudioContext activos, para reanudarlos si el navegador los suspende
+        const allAudioCtx = [];
 
         // ===== PLAYER FACTORY =====
         function createPlayer(type) {
@@ -943,15 +766,13 @@
                 allMedia: [],
                 index: 0,
                 playing: false,
-                autoplay: 0,
+                autoplay: isVideo ? 1 : 0,
                 timer: null,
                 menuIndex: null,
-                // radio (solo aplica a mp3)
                 radioStations: isVideo ? [] : [...RADIO_PRESETS],
                 radioAudio: isVideo ? null : new Audio(),
                 radioPlaying: false,
                 radioCurrent: null,
-                // ecualizador
                 audioCtx: null,
                 bassNode: null,
                 trebleNode: null,
@@ -961,50 +782,42 @@
 
             state.media = isVideo ? el('track_image') : document.createElement('audio');
 
-            // Conecta un elemento de audio/video a un ecualizador basico (graves/agudos)
             function setupEQ(mediaEl) {
                 try {
                     if (!state.audioCtx) {
                         const AC = window.AudioContext || window.webkitAudioContext;
                         state.audioCtx = new AC();
+                        allAudioCtx.push(state.audioCtx);
                     }
                     const source = state.audioCtx.createMediaElementSource(mediaEl);
                     const bass = state.audioCtx.createBiquadFilter();
-                    bass.type = 'lowshelf';
-                    bass.frequency.value = 200;
-                    bass.gain.value = 0;
+                    bass.type = 'lowshelf'; bass.frequency.value = 200; bass.gain.value = 0;
                     const treble = state.audioCtx.createBiquadFilter();
-                    treble.type = 'highshelf';
-                    treble.frequency.value = 3000;
-                    treble.gain.value = 0;
-                    source.connect(bass);
-                    bass.connect(treble);
-                    treble.connect(state.audioCtx.destination);
+                    treble.type = 'highshelf'; treble.frequency.value = 3000; treble.gain.value = 0;
+                    source.connect(bass); bass.connect(treble); treble.connect(state.audioCtx.destination);
                     return { bass, treble };
                 } catch (e) {
-                    console.warn('EQ no disponible para este audio:', e);
+                    console.warn('EQ no disponible:', e);
                     return null;
                 }
             }
 
             function ensureAudioCtxResumed() {
-                if (state.audioCtx && state.audioCtx.state === 'suspended') {
-                    state.audioCtx.resume();
-                }
+                if (state.audioCtx && state.audioCtx.state === 'suspended') state.audioCtx.resume();
             }
 
             function renderLibrary() {
                 const list = el('song_list');
                 if (!list) return;
                 if (state.allMedia.length === 0) {
-                    list.innerHTML = '<p class="song-list-empty">No hay canciones cargadas todavía</p>';
+                    list.innerHTML = `<p class="song-list-empty">No hay ${isVideo ? 'videos' : 'canciones'} cargados todavía</p>`;
                     return;
                 }
                 list.innerHTML = '';
                 state.allMedia.forEach((song, i) => {
                     const item = document.createElement('div');
                     item.className = 'song-item' + (i === state.index ? ' active' : '');
-                    item.innerHTML = `<i class="fa fa-music"></i><span class="song-name">${song.name}</span>`;
+                    item.innerHTML = `<i class="fa fa-${isVideo ? 'film' : 'music'}"></i><span class="song-name">${song.name}</span>`;
                     item.onclick = () => openSongMenu(type, i);
                     list.appendChild(item);
                 });
@@ -1053,12 +866,10 @@
                     return;
                 }
                 if (state.radioPlaying) {
-                    state.radioAudio.pause();
-                    state.radioPlaying = false;
+                    state.radioAudio.pause(); state.radioPlaying = false;
                     el('radio_play').innerHTML = '<i class="fa fa-play"></i>';
                 } else {
-                    state.radioAudio.play();
-                    state.radioPlaying = true;
+                    state.radioAudio.play(); state.radioPlaying = true;
                     el('radio_play').innerHTML = '<i class="fa fa-pause"></i>';
                 }
                 renderRadioList();
@@ -1077,17 +888,19 @@
             function loadTrack(i) {
                 if (state.allMedia.length === 0) return;
                 ensureAudioCtxResumed();
+                if (state.radioPlaying) stopRadio();
                 clearInterval(state.timer);
                 el('duration_slider').value = 0;
                 paintSlider(el('duration_slider'));
 
                 state.media.src = state.allMedia[i].url;
                 el('title').innerHTML = state.allMedia[i].name;
-                el('artist').innerHTML = `${isVideo ? 'Video' : 'Canción'} ${i + 1} de ${state.allMedia.length}`;
+                if (el('artist')) el('artist').innerHTML = `${isVideo ? 'Video' : 'Canción'} ${i + 1} de ${state.allMedia.length}`;
 
                 state.media.load();
                 state.timer = setInterval(rangeSlider, 1000);
                 if (el('present')) el('present').innerHTML = i + 1;
+                if (el('total_top')) el('total_top').innerHTML = state.allMedia.length;
                 state.index = i;
                 renderLibrary();
             }
@@ -1120,15 +933,12 @@
             function next() {
                 if (state.allMedia.length === 0) return;
                 const i = state.index < state.allMedia.length - 1 ? state.index + 1 : 0;
-                loadTrack(i);
-                play();
+                loadTrack(i); play();
             }
-
             function previous() {
                 if (state.allMedia.length === 0) return;
                 const i = state.index > 0 ? state.index - 1 : state.allMedia.length - 1;
-                loadTrack(i);
-                play();
+                loadTrack(i); play();
             }
 
             function volumeChange() {
@@ -1137,34 +947,27 @@
                 state.media.volume = v / 100;
                 if (state.radioAudio) state.radioAudio.volume = v / 100;
             }
-
             function volumeStep(delta) {
                 const v = el('volume');
                 let newVal = Math.min(100, Math.max(0, Number(v.value) + delta));
-                v.value = newVal;
-                paintSlider(v);
-                volumeChange();
+                v.value = newVal; paintSlider(v); volumeChange();
             }
-
             function mute() {
                 state.media.volume = 0;
                 if (state.radioAudio) state.radioAudio.volume = 0;
-                el('volume').value = 0;
-                paintSlider(el('volume'));
-                el('volume_show').innerHTML = 0;
+                el('volume').value = 0; paintSlider(el('volume')); el('volume_show').innerHTML = 0;
             }
 
             function brightnessChange() {
                 const b = el('brightness');
-                const lcd = document.querySelector(`#${type}-player .lcd`);
-                if (!b || !lcd) return;
-                lcd.style.filter = `brightness(${b.value}%)`;
+                const target = isVideo ? el('track_image') : document.querySelector(`#${type}-player .lcd`);
+                if (!b || !target) return;
+                target.style.filter = `brightness(${b.value}%)`;
                 el('brightness_show').innerHTML = `${b.value}%`;
             }
 
             function eqChange(band) {
                 ensureAudioCtxResumed();
-                // Conecta el EQ recien la primera vez que se toca (evita crashear si el navegador bloquea autoplay del contexto)
                 if (!state.bassNode && !isVideo) {
                     const chain = setupEQ(state.media);
                     if (chain) { state.bassNode = chain.bass; state.trebleNode = chain.treble; }
@@ -1190,6 +993,8 @@
             }
 
             function rangeSlider() {
+                // si el AudioContext quedo suspendido (foco perdido, etc), lo reactivamos para que no se corte el sonido
+                ensureAudioCtxResumed();
                 if (!isNaN(state.media.duration)) {
                     el('duration_slider').value = state.media.currentTime * (100 / state.media.duration);
                     paintSlider(el('duration_slider'));
@@ -1209,21 +1014,14 @@
                         const acceptType = isVideo ? 'video/' : 'audio/';
                         if (file.type.startsWith(acceptType)) {
                             const base64Data = await blobToBase64(file);
-                            const dbId = await saveToDB(state.store, {
-                                name: file.name.replace(/\.[^/.]+$/, ""),
-                                data: base64Data
-                            });
-                            state.allMedia.push({
-                                dbId,
-                                name: file.name.replace(/\.[^/.]+$/, ""),
-                                blob: file,
-                                url: URL.createObjectURL(file)
-                            });
+                            const dbId = await saveToDB(state.store, { name: file.name.replace(/\.[^/.]+$/, ""), data: base64Data });
+                            state.allMedia.push({ dbId, name: file.name.replace(/\.[^/.]+$/, ""), blob: file, url: URL.createObjectURL(file) });
                         }
                     }
                     if (state.allMedia.length > 0) {
                         if (state.index === 0 && !state.playing) loadTrack(0);
                         if (el('total')) el('total').innerHTML = state.allMedia.length;
+                        if (el('total_top')) el('total_top').innerHTML = state.allMedia.length;
                         renderLibrary();
                     }
                 } catch (err) {
@@ -1239,14 +1037,14 @@
                 try {
                     loading.style.display = 'block';
                     await clearDB(state.store);
-                    state.allMedia = [];
-                    state.index = 0;
+                    state.allMedia = []; state.index = 0;
                     pause();
                     el('title').innerHTML = isVideo ? 'Carga tus videos' : 'Carga tus canciones';
-                    el('artist').innerHTML = isVideo ? 'Selecciona archivos de video' : 'Selecciona archivos de música';
+                    if (el('artist')) el('artist').innerHTML = isVideo ? '' : 'Selecciona archivos de música';
                     if (isVideo) el('track_image').removeAttribute('src');
                     if (el('present')) el('present').innerHTML = '0';
                     if (el('total')) el('total').innerHTML = '0';
+                    if (el('total_top')) el('total_top').innerHTML = '0';
                     el('duration_slider').value = 0;
                     paintSlider(el('duration_slider'));
                     renderLibrary();
@@ -1267,16 +1065,17 @@
                     if (state.allMedia.length === 0) {
                         pause();
                         el('title').innerHTML = isVideo ? 'Carga tus videos' : 'Carga tus canciones';
-                        el('artist').innerHTML = isVideo ? 'Selecciona archivos de video' : 'Selecciona archivos de música';
+                        if (el('artist')) el('artist').innerHTML = isVideo ? '' : 'Selecciona archivos de música';
                         state.index = 0;
                     } else {
                         if (state.index >= state.allMedia.length) state.index = state.allMedia.length - 1;
                         loadTrack(state.index);
                     }
                     if (el('total')) el('total').innerHTML = state.allMedia.length;
+                    if (el('total_top')) el('total_top').innerHTML = state.allMedia.length;
                     renderLibrary();
                 } catch (err) {
-                    console.error('Error eliminando cancion:', err);
+                    console.error('Error eliminando:', err);
                 }
             }
 
@@ -1290,6 +1089,7 @@
                     state.index = 0;
                     loadTrack(0);
                     if (el('total')) el('total').innerHTML = state.allMedia.length;
+                    if (el('total_top')) el('total_top').innerHTML = state.allMedia.length;
                 }
                 renderLibrary();
                 renderRadioList();
@@ -1298,27 +1098,22 @@
             if (isVideo) {
                 state.media.addEventListener('ended', () => {
                     if (el('play')) el('play').innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
+                    if (el('wheel_play')) el('wheel_play').innerHTML = '<i class="fa fa-play"></i>';
                     if (state.autoplay === 1) next();
                 });
             }
 
-            el('file-input').addEventListener('change', function (e) {
-                handleFiles(e.target.files);
-                this.value = '';
-            });
+            el('file-input').addEventListener('change', function (e) { handleFiles(e.target.files); this.value = ''; });
 
             return {
                 justPlay, next, previous, volumeChange, volumeStep, mute, brightnessChange, eqChange,
-                changeDuration, clearAll, init, loadTrack, play,
+                changeDuration, clearAll, init, loadTrack, play, pause,
                 deleteOne, toggleRadio, addRadioStation, stopRadio,
                 getState: () => state
             };
         }
 
-        const players = {
-            mp3: createPlayer('mp3'),
-            mp4: createPlayer('mp4')
-        };
+        const players = { mp3: createPlayer('mp3'), mp4: createPlayer('mp4') };
 
         // ===== FUNCIONES GLOBALES =====
         function justPlay(type) { players[type].justPlay(); }
@@ -1334,48 +1129,153 @@
         function toggleRadio(type) { players[type].toggleRadio(); }
         function addRadioStation(type) { players[type].addRadioStation(); }
 
-        // ===== NAVEGACION ENTRE VISTAS (Música / Radio / Ajustes) =====
+        // ===== NAVEGACION MP3 (tabs Música / Radio / Ajustes) =====
         function setView(type, view) {
             const state = players[type].getState();
-            // si nos vamos de la vista de radio, se detiene la reproduccion de radio
             const wasRadio = !document.getElementById(`${type}-view-radio`).classList.contains('hidden');
-            if (wasRadio && view !== 'radio' && state.radioPlaying) {
-                players[type].stopRadio();
-            }
+            if (wasRadio && view !== 'radio' && state.radioPlaying) players[type].stopRadio();
             ['player', 'radio', 'ajustes'].forEach(v => {
                 document.getElementById(`${type}-view-${v}`).classList.toggle('hidden', v !== view);
                 document.getElementById(`${type}-tab-${v}`).classList.toggle('active', v === view);
             });
         }
 
-        // ===== MENU DE CANCION (carpeta) =====
+        // ===== NAVEGACION MP4 (home / video / ebook / ajustes) =====
+        let mp4CurrentView = 'home';
+        function setMp4View(view) {
+            mp4CurrentView = view;
+            ['home', 'video', 'ebook', 'ajustes'].forEach(v => {
+                document.getElementById(`mp4-view-${v}`).classList.toggle('hidden', v !== view);
+            });
+        }
+        function goHome(type) {
+            if (type === 'mp4') {
+                players.mp4.pause();
+                setMp4View('home');
+            }
+        }
+        function wheelPrev(type) {
+            if (mp4CurrentView === 'video') players[type].previous();
+        }
+        function wheelNext(type) {
+            if (mp4CurrentView === 'video') players[type].next();
+        }
+        function wheelPlayPause(type) {
+            if (mp4CurrentView === 'video') players[type].justPlay();
+            else setMp4View('video');
+        }
+
+        // ===== MENU DE ITEM (cancion / video) =====
         function openSongMenu(type, index) {
             const state = players[type].getState();
             state.menuIndex = index;
             document.getElementById(`${type}-menu_song_name`).innerHTML = state.allMedia[index].name;
             document.getElementById(`${type}-song_menu_overlay`).classList.remove('hidden');
         }
-
         function closeSongMenu(type, event) {
             if (event && event.target !== event.currentTarget) return;
             document.getElementById(`${type}-song_menu_overlay`).classList.add('hidden');
         }
-
         function playFromMenu(type) {
             const state = players[type].getState();
             if (state.menuIndex === null) return;
             players[type].loadTrack(state.menuIndex);
             players[type].play();
+            if (type === 'mp4') setMp4View('video');
             closeSongMenu(type);
         }
-
         function deleteFromMenu(type) {
             const state = players[type].getState();
             if (state.menuIndex === null) return;
-            if (confirm('¿Eliminar esta canción?')) {
-                players[type].deleteOne(state.menuIndex);
-            }
+            if (confirm('¿Eliminar este elemento?')) players[type].deleteOne(state.menuIndex);
             closeSongMenu(type);
+        }
+
+        // ===== EBOOKS =====
+        const ebookState = { books: [], readingIndex: null, fontSize: 16 };
+
+        function renderBookList() {
+            const list = document.getElementById('mp4-book_list');
+            document.getElementById('mp4-book_total').innerHTML = ebookState.books.length;
+            if (ebookState.books.length === 0) {
+                list.innerHTML = '<p class="song-list-empty">No hay libros cargados (solo .txt)</p>';
+                return;
+            }
+            list.innerHTML = '';
+            ebookState.books.forEach((book, i) => {
+                const item = document.createElement('div');
+                item.className = 'book-item';
+                item.innerHTML = `<i class="fa fa-book"></i><span class="book-name">${book.name}</span><span class="book-trash" onclick="event.stopPropagation(); deleteBook(${i})"><i class="fa fa-trash"></i></span>`;
+                item.onclick = (e) => { if (e.target.closest('.book-trash')) return; openBook(i); };
+                list.appendChild(item);
+            });
+        }
+
+        function openBook(i) {
+            const book = ebookState.books[i];
+            if (!book) return;
+            ebookState.readingIndex = i;
+            document.getElementById('mp4-reader_title').innerHTML = book.name;
+            const textEl = document.getElementById('mp4-reader_text');
+            textEl.innerHTML = '';
+            textEl.style.fontSize = ebookState.fontSize + 'px';
+            textEl.textContent = book.content;
+            document.getElementById('mp4-book_list_wrap').classList.add('hidden');
+            document.getElementById('mp4-reader_wrap').classList.remove('hidden');
+        }
+
+        function closeReader() {
+            ebookState.readingIndex = null;
+            document.getElementById('mp4-reader_wrap').classList.add('hidden');
+            document.getElementById('mp4-book_list_wrap').classList.remove('hidden');
+        }
+
+        function changeFontSize(delta) {
+            ebookState.fontSize = Math.min(28, Math.max(10, ebookState.fontSize + delta));
+            document.getElementById('mp4-reader_text').style.fontSize = ebookState.fontSize + 'px';
+        }
+
+        async function deleteBook(i) {
+            const book = ebookState.books[i];
+            if (!book) return;
+            if (!confirm('¿Eliminar este libro?')) return;
+            await deleteOneFromDB('ebooks', book.dbId);
+            ebookState.books.splice(i, 1);
+            renderBookList();
+        }
+
+        async function clearAllBooks() {
+            if (!confirm('¿Borrar todos los libros?')) return;
+            await clearDB('ebooks');
+            ebookState.books = [];
+            renderBookList();
+        }
+
+        document.getElementById('mp4-book-input').addEventListener('change', async function (e) {
+            const files = e.target.files;
+            loading.style.display = 'block';
+            try {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const content = await readFileAsText(file);
+                    const name = file.name.replace(/\.[^/.]+$/, "");
+                    const dbId = await saveToDB('ebooks', { name, content });
+                    ebookState.books.push({ dbId, name, content });
+                }
+                renderBookList();
+            } catch (err) {
+                console.error('Error cargando libro:', err);
+                alert('Error al cargar el libro');
+            } finally {
+                loading.style.display = 'none';
+                this.value = '';
+            }
+        });
+
+        async function initEbooks() {
+            const saved = await loadFromDB('ebooks');
+            ebookState.books = saved.map(b => ({ dbId: b.id, name: b.name, content: b.content }));
+            renderBookList();
         }
 
         // ===== SELECTOR DE MODO =====
@@ -1385,12 +1285,23 @@
         }
 
         function goBack(type) {
-            // al salir del reproductor tambien se detiene la radio si estaba sonando
             const state = players[type].getState();
             if (state.radioPlaying) players[type].stopRadio();
+            players[type].pause();
+            if (type === 'mp4') setMp4View('home');
             document.getElementById(`${type}-player`).classList.add('hidden');
             document.getElementById('mode-select').classList.remove('hidden');
         }
+
+        // Reanuda todos los AudioContext cuando la pestaña vuelve a estar visible (evita que la musica se "corte" sin sonido)
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                allAudioCtx.forEach(ctx => { if (ctx.state === 'suspended') ctx.resume(); });
+            }
+        });
+        window.addEventListener('focus', () => {
+            allAudioCtx.forEach(ctx => { if (ctx.state === 'suspended') ctx.resume(); });
+        });
 
         // ===== INICIALIZACION =====
         window.addEventListener('load', async () => {
@@ -1399,6 +1310,7 @@
                 await initDB();
                 await players.mp3.init();
                 await players.mp4.init();
+                await initEbooks();
                 setupSliderPainting();
                 loading.style.display = 'none';
             } catch (err) {
