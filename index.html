@@ -1456,11 +1456,15 @@
             const player = players[type];
             const state = player.getState();
             if (state.radioPlaying) player.stopRadio();
+            if (state.audioCtx && state.audioCtx.state === 'suspended') state.audioCtx.resume();
             clearInterval(state.timer);
             const blob = base64ToBlob(item.data);
             state.media.src = URL.createObjectURL(blob);
             state.media.load();
-            state.media.play();
+            state.media.play().catch(err => {
+                console.error('No se pudo reproducir el archivo de la nube:', err);
+                alert('No se pudo reproducir este archivo: ' + err.message);
+            });
             state.playing = true;
             const titleEl = document.getElementById(`${type}-title`);
             if (titleEl) titleEl.innerHTML = item.name;
@@ -1471,6 +1475,8 @@
             const wheelBtn = document.getElementById(`${type}-wheel_play`);
             if (wheelBtn) wheelBtn.innerHTML = '<i class="fa fa-pause"></i>';
             state.timer = setInterval(() => {
+                // reanuda el AudioContext si el navegador lo suspendio (evita que quede muda)
+                if (state.audioCtx && state.audioCtx.state === 'suspended') state.audioCtx.resume();
                 if (!isNaN(state.media.duration)) {
                     const slider = document.getElementById(`${type}-duration_slider`);
                     slider.value = state.media.currentTime * (100 / state.media.duration);
