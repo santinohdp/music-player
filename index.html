@@ -188,21 +188,44 @@
 
         input[type="range"] {
             -webkit-appearance: none;
+            appearance: none;
             width: 100%;
             outline: none;
-            height: 8px;
+            height: 6px;
             border-radius: 10px;
             background: rgba(255,255,255,0.15);
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 6px;
+            border-radius: 10px;
+            background: transparent;
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             height: 14px;
             width: 14px;
+            margin-top: -4px;
             border-radius: 50%;
             background: #148F77;
             cursor: pointer;
-            box-shadow: -415px 0 0 400px #148F77;
+        }
+
+        input[type="range"]::-moz-range-track {
+            height: 6px;
+            border-radius: 10px;
+            background: transparent;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            background: #148F77;
+            border: none;
+            cursor: pointer;
         }
 
         /* --- Seccion Ajustes --- */
@@ -659,6 +682,22 @@
     <script>
         const loading = document.querySelector('#loading');
 
+        // Pinta el relleno de un slider segun su valor actual (min/max/value)
+        function paintSlider(input) {
+            if (!input) return;
+            const min = Number(input.min) || 0;
+            const max = Number(input.max) || 100;
+            const pct = ((Number(input.value) - min) * 100) / (max - min);
+            input.style.background = `linear-gradient(to right, #148F77 ${pct}%, rgba(255,255,255,0.15) ${pct}%)`;
+        }
+
+        function setupSliderPainting() {
+            document.querySelectorAll('input[type="range"]').forEach(input => {
+                paintSlider(input);
+                input.addEventListener('input', () => paintSlider(input));
+            });
+        }
+
         const DEFAULT_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect fill='%23333' width='300' height='300'/%3E%3Ctext fill='%23fff' font-size='24' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3E🎵%3C/text%3E%3C/svg%3E";
 
         // ===== INDEXEDDB =====
@@ -776,6 +815,7 @@
                 if (state.allMedia.length === 0) return;
                 clearInterval(state.timer);
                 el('duration_slider').value = 0;
+                paintSlider(el('duration_slider'));
 
                 state.media.src = state.allMedia[i].url;
                 el('title').innerHTML = state.allMedia[i].name;
@@ -859,6 +899,7 @@
             function rangeSlider() {
                 if (!isNaN(state.media.duration)) {
                     el('duration_slider').value = state.media.currentTime * (100 / state.media.duration);
+                    paintSlider(el('duration_slider'));
                 }
                 if (state.media.ended) {
                     el('play').innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
@@ -914,6 +955,7 @@
                     if (el('present')) el('present').innerHTML = '0';
                     if (el('total')) el('total').innerHTML = '0';
                     el('duration_slider').value = 0;
+                    paintSlider(el('duration_slider'));
                     renderLibrary();
                     loading.style.display = 'none';
                 } catch (err) {
@@ -1043,6 +1085,7 @@
                 await initDB();
                 await players.mp3.init();
                 await players.mp4.init();
+                setupSliderPainting();
                 loading.style.display = 'none';
             } catch (err) {
                 console.error('Error iniciando app:', err);
