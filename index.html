@@ -391,10 +391,18 @@
         .reader-text::-webkit-scrollbar-thumb { background: #bfe8ff; border-radius: 5px; }
 
         /* --- rueda de control --- */
+        .controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 16px;
+        }
+
         .wheel {
             width: 110px; height: 110px; border-radius: 50%;
             background: radial-gradient(circle at 35% 30%, #4a4a4a, #1c1c1c 70%);
-            margin: 16px auto 0; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            margin: 0; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
         .wheel button { position: absolute; background: none; border: none; color: #ddd; font-size: 14px; cursor: pointer; }
         .wheel .w-center {
@@ -406,6 +414,72 @@
         .wheel .w-down { bottom: 8px; left: 50%; transform: translateX(-50%); }
         .wheel .w-left { left: 8px; top: 50%; transform: translateY(-50%); }
         .wheel .w-right { right: 8px; top: 50%; transform: translateY(-50%); }
+
+        .wheel.locked { opacity: 0.4; pointer-events: none; }
+
+        /* --- interruptores laterales: fuente (Nube/Carpeta) y bloqueo --- */
+        .side-switches {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .switch-toggle {
+            width: 30px;
+            height: 66px;
+            background: #17181a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 0;
+            box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
+        }
+
+        .switch-toggle .switch-option {
+            font-family: 'VT323', monospace;
+            font-size: 12px;
+            color: #666;
+            z-index: 2;
+        }
+
+        .switch-toggle.active-cloud .switch-option.top { color: #bfe8ff; font-weight: bold; }
+        .switch-toggle.active-local .switch-option.bottom { color: #bfe8ff; font-weight: bold; }
+
+        .switch-toggle .switch-knob {
+            position: absolute;
+            left: 2px;
+            top: 2px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #6a6a6a, #2a2a2a 70%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            transition: top 0.2s;
+        }
+        .switch-toggle.active-local .switch-knob { top: calc(100% - 26px); }
+
+        .lock-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #17181a;
+            border: 1px solid #333;
+            color: #777;
+            cursor: pointer;
+            font-size: 12px;
+            box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
+        }
+        .lock-btn.locked {
+            background: #7a1f1f;
+            color: #fff;
+            border-color: #a5271f;
+        }
 
         /* Menu emergente de item (cancion / libro) */
         .song-menu-overlay {
@@ -545,12 +619,23 @@
                 </div>
             </div>
 
-            <div class="wheel">
-                <button class="w-up" onclick="volumeStep('mp3', 5)"><i class="fa fa-chevron-up"></i></button>
-                <button class="w-down" onclick="volumeStep('mp3', -5)"><i class="fa fa-chevron-down"></i></button>
-                <button class="w-left" onclick="previousMedia('mp3')"><i class="fa fa-chevron-left"></i></button>
-                <button class="w-right" onclick="nextMedia('mp3')"><i class="fa fa-chevron-right"></i></button>
-                <button class="w-center" id="mp3-wheel_play" onclick="justPlay('mp3')"><i class="fa fa-play"></i></button>
+            <div class="controls-row">
+                <div class="side-switches">
+                    <div class="switch-toggle active-local" id="mp3-source_switch" onclick="toggleSource('mp3')" title="Elegir fuente activa para la ruedita">
+                        <span class="switch-option top">N</span>
+                        <span class="switch-knob"></span>
+                        <span class="switch-option bottom">C</span>
+                    </div>
+                    <button class="lock-btn" id="mp3-lock_btn" onclick="toggleLock('mp3')" title="Bloquear controles"><i class="fa fa-unlock"></i></button>
+                </div>
+
+                <div class="wheel">
+                    <button class="w-up" onclick="volumeStep('mp3', 5)"><i class="fa fa-chevron-up"></i></button>
+                    <button class="w-down" onclick="volumeStep('mp3', -5)"><i class="fa fa-chevron-down"></i></button>
+                    <button class="w-left" onclick="previousMedia('mp3')"><i class="fa fa-chevron-left"></i></button>
+                    <button class="w-right" onclick="nextMedia('mp3')"><i class="fa fa-chevron-right"></i></button>
+                    <button class="w-center" id="mp3-wheel_play" onclick="justPlay('mp3')"><i class="fa fa-play"></i></button>
+                </div>
             </div>
         </div>
     </div>
@@ -677,7 +762,7 @@
                 </div>
             </div>
 
-            <div class="wheel">
+            <div class="wheel" style="margin: 16px auto 0;">
                 <button class="w-up" onclick="goHome('mp4')">MENÚ</button>
                 <button class="w-left" onclick="wheelPrev('mp4')"><i class="fa fa-chevron-left"></i></button>
                 <button class="w-right" onclick="wheelNext('mp4')"><i class="fa fa-chevron-right"></i></button>
@@ -843,7 +928,12 @@
                 bassNode: null,
                 trebleNode: null,
                 radioBassNode: null,
-                radioTrebleNode: null
+                radioTrebleNode: null,
+                // interruptores: fuente activa para la ruedita (local/cloud) y bloqueo de controles
+                source: 'local',
+                locked: false,
+                cloudMedia: [],
+                cloudIndex: 0
             };
 
             state.media = isVideo ? el('track_image') : document.createElement('audio');
@@ -989,19 +1079,40 @@
             }
 
             function justPlay() {
-                if (state.allMedia.length === 0 && !state.media.src) {
-                    alert(`Por favor, carga archivos de ${isVideo ? 'video' : 'música'} primero, o elegí uno de la Nube`);
+                if (state.locked) return;
+                if (!state.media.src) {
+                    if (state.source === 'cloud') {
+                        if (state.cloudMedia.length === 0) { alert('No hay archivos en la Nube todavía'); return; }
+                        playCloudTrackByIndex(type, 0);
+                    } else {
+                        if (state.allMedia.length === 0) { alert(`Por favor, carga archivos de ${isVideo ? 'video' : 'música'} primero`); return; }
+                        loadTrack(0); play();
+                    }
                     return;
                 }
                 state.playing ? pause() : play();
             }
 
             function next() {
+                if (state.locked) return;
+                if (state.source === 'cloud') {
+                    if (state.cloudMedia.length === 0) return;
+                    const i = state.cloudIndex < state.cloudMedia.length - 1 ? state.cloudIndex + 1 : 0;
+                    playCloudTrackByIndex(type, i);
+                    return;
+                }
                 if (state.allMedia.length === 0) return;
                 const i = state.index < state.allMedia.length - 1 ? state.index + 1 : 0;
                 loadTrack(i); play();
             }
             function previous() {
+                if (state.locked) return;
+                if (state.source === 'cloud') {
+                    if (state.cloudMedia.length === 0) return;
+                    const i = state.cloudIndex > 0 ? state.cloudIndex - 1 : state.cloudMedia.length - 1;
+                    playCloudTrackByIndex(type, i);
+                    return;
+                }
                 if (state.allMedia.length === 0) return;
                 const i = state.index > 0 ? state.index - 1 : state.allMedia.length - 1;
                 loadTrack(i); play();
@@ -1014,6 +1125,7 @@
                 if (state.radioAudio) state.radioAudio.volume = v / 100;
             }
             function volumeStep(delta) {
+                if (state.locked) return;
                 const v = el('volume');
                 let newVal = Math.min(100, Math.max(0, Number(v.value) + delta));
                 v.value = newVal; paintSlider(v); volumeChange();
@@ -1194,6 +1306,25 @@
         function clearAllMedia(type) { players[type].clearAll(); }
         function toggleRadio(type) { players[type].toggleRadio(); }
         function addRadioStation(type) { players[type].addRadioStation(); }
+
+        // ===== INTERRUPTORES: fuente activa (Nube/Carpeta) y bloqueo de controles =====
+        function toggleSource(type) {
+            const state = players[type].getState();
+            state.source = state.source === 'cloud' ? 'local' : 'cloud';
+            const el = document.getElementById(`${type}-source_switch`);
+            el.classList.toggle('active-cloud', state.source === 'cloud');
+            el.classList.toggle('active-local', state.source === 'local');
+        }
+
+        function toggleLock(type) {
+            const state = players[type].getState();
+            state.locked = !state.locked;
+            const btn = document.getElementById(`${type}-lock_btn`);
+            const wheel = document.querySelector(`#${type}-player .wheel`);
+            btn.classList.toggle('locked', state.locked);
+            btn.innerHTML = state.locked ? '<i class="fa fa-lock"></i>' : '<i class="fa fa-unlock"></i>';
+            if (wheel) wheel.classList.toggle('locked', state.locked);
+        }
 
         // ===== NAVEGACION MP3 (tabs Música / Radio / Ajustes) =====
         function setView(type, view) {
@@ -1417,38 +1548,50 @@
             try {
                 firebase.initializeApp(firebaseConfig);
                 const cloudDb = firebase.database();
-                renderCloudList(cloudDb, 'songs', 'mp3-cloud_list', 'mp3-cloud_total', item => playCloudTrack('mp3', item), 'fa-music');
-                renderCloudList(cloudDb, 'videos', 'mp4-cloud_list', 'mp4-cloud_total', item => playCloudTrack('mp4', item), 'fa-film');
+                renderCloudList(cloudDb, 'songs', 'mp3-cloud_list', 'mp3-cloud_total', (item, i) => playCloudTrackByIndex('mp3', i), 'fa-music', players.mp3.getState());
+                renderCloudList(cloudDb, 'videos', 'mp4-cloud_list', 'mp4-cloud_total', (item, i) => playCloudTrackByIndex('mp4', i), 'fa-film', players.mp4.getState());
                 renderCloudList(cloudDb, 'books', 'mp4-cloud_book_list', 'mp4-cloud_book_total', item => openCloudBook(item), 'fa-book');
             } catch (err) {
                 console.warn('No se pudo conectar a Firebase:', err);
             }
         }
 
-        function renderCloudList(cloudDb, path, listId, countId, onClick, iconClass) {
+        function renderCloudList(cloudDb, path, listId, countId, onClick, iconClass, stateRef) {
             const listEl = document.getElementById(listId);
             const countEl = document.getElementById(countId);
             cloudDb.ref(path).on('value', (snapshot) => {
                 const data = snapshot.val();
-                const entries = data ? Object.entries(data) : [];
+                const entries = data
+                    ? Object.entries(data).sort((a, b) => (b[1].uploadedAt || 0) - (a[1].uploadedAt || 0))
+                    : [];
                 countEl.innerHTML = entries.length;
+
+                // guardamos la lista en el estado del reproductor para que la ruedita pueda navegarla
+                if (stateRef) stateRef.cloudMedia = entries.map(([key, item]) => ({ key, ...item }));
+
                 if (entries.length === 0) {
                     listEl.innerHTML = '<p class="song-list-empty">No hay archivos en la nube</p>';
                     return;
                 }
                 listEl.innerHTML = '';
-                entries
-                    .sort((a, b) => (b[1].uploadedAt || 0) - (a[1].uploadedAt || 0))
-                    .forEach(([key, item]) => {
-                        const row = document.createElement('div');
-                        row.className = 'song-item';
-                        row.innerHTML = `<i class="fa ${iconClass}"></i><span class="song-name">${item.name}</span>`;
-                        row.onclick = () => onClick(item);
-                        listEl.appendChild(row);
-                    });
+                entries.forEach(([key, item], i) => {
+                    const row = document.createElement('div');
+                    row.className = 'song-item';
+                    row.innerHTML = `<i class="fa ${iconClass}"></i><span class="song-name">${item.name}</span>`;
+                    row.onclick = () => onClick(item, i);
+                    listEl.appendChild(row);
+                });
             }, (err) => {
                 listEl.innerHTML = '<p class="song-list-empty">Sin conexión a la nube</p>';
             });
+        }
+
+        function playCloudTrackByIndex(type, index) {
+            const state = players[type].getState();
+            const item = state.cloudMedia[index];
+            if (!item) return;
+            state.cloudIndex = index;
+            playCloudTrack(type, item);
         }
 
         function playCloudTrack(type, item) {
