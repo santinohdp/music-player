@@ -1452,11 +1452,13 @@
         }
 
         function playCloudTrack(type, item) {
+            if (!item.data) { alert('Este archivo de la nube no tiene contenido válido'); return; }
             const player = players[type];
             const state = player.getState();
             if (state.radioPlaying) player.stopRadio();
             clearInterval(state.timer);
-            state.media.src = item.url;
+            const blob = base64ToBlob(item.data);
+            state.media.src = URL.createObjectURL(blob);
             state.media.load();
             state.media.play();
             state.playing = true;
@@ -1479,10 +1481,11 @@
         }
 
         async function openCloudBook(item) {
+            if (!item.data) { alert('Este libro de la nube no tiene contenido válido'); return; }
             loading.style.display = 'block';
             try {
-                const res = await fetch(item.url);
-                const text = await res.text();
+                const blob = base64ToBlob(item.data);
+                const text = await blob.text();
                 document.getElementById('mp4-reader_title').innerHTML = `☁ ${item.name}`;
                 const textEl = document.getElementById('mp4-reader_text');
                 textEl.style.fontSize = ebookState.fontSize + 'px';
