@@ -533,6 +533,13 @@
                             </div>
                             <div class="song-list" id="mp3-song_list"><p class="song-list-empty">No hay canciones cargadas todavía</p></div>
                         </div>
+
+                        <div class="setting-block" style="flex:1; min-height:0; display:flex; flex-direction:column;">
+                            <div class="folder-header">
+                                <span><i class="fa fa-cloud"></i> Nube (<span id="mp3-cloud_total">0</span>)</span>
+                            </div>
+                            <div class="song-list" id="mp3-cloud_list"><p class="song-list-empty">Conectando...</p></div>
+                        </div>
                     </div>
 
                 </div>
@@ -613,6 +620,13 @@
                             </div>
                             <div class="book-list" id="mp4-book_list"><p class="song-list-empty">No hay libros cargados (solo .txt)</p></div>
                         </div>
+
+                        <div id="mp4-cloud_book_wrap" style="flex-shrink:0; margin-top:6px;">
+                            <div class="folder-header">
+                                <span><i class="fa fa-cloud"></i> Nube (<span id="mp4-cloud_book_total">0</span>)</span>
+                            </div>
+                            <div class="book-list" id="mp4-cloud_book_list" style="max-height:80px;"><p class="song-list-empty">Conectando...</p></div>
+                        </div>
                         <!-- lector -->
                         <div id="mp4-reader_wrap" class="hidden" style="flex:1; min-height:0; display:flex; flex-direction:column;">
                             <div class="reader-header">
@@ -651,6 +665,13 @@
                             </div>
                             <div class="song-list" id="mp4-song_list"><p class="song-list-empty">No hay videos cargados todavía</p></div>
                         </div>
+
+                        <div class="setting-block" style="flex:1; min-height:0; display:flex; flex-direction:column;">
+                            <div class="folder-header">
+                                <span><i class="fa fa-cloud"></i> Nube (<span id="mp4-cloud_total">0</span>)</span>
+                            </div>
+                            <div class="song-list" id="mp4-cloud_list"><p class="song-list-empty">Conectando...</p></div>
+                        </div>
                     </div>
 
                 </div>
@@ -673,6 +694,10 @@
             <button class="btn-cancel" onclick="closeSongMenu('mp4')"><i class="fa fa-times"></i> Cancelar</button>
         </div>
     </div>
+
+    <!-- Firebase (conexion con el panel Fenix TV) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
     <script>
         const loading = document.querySelector('#loading');
@@ -1361,12 +1386,116 @@
                 await players.mp4.init();
                 await initEbooks();
                 setupSliderPainting();
+                initCloudSync();
                 loading.style.display = 'none';
             } catch (err) {
                 console.error('Error iniciando app:', err);
                 loading.style.display = 'none';
             }
         });
+
+        // ===== SINCRONIZACION CON FIREBASE (contenido subido desde el panel) =====
+        const firebaseConfig = {
+            apiKey: "AIzaSyAmJtRakmbWFeNA7o9ii-Wj2ESbnZLGFcE",
+            authDomain: "helio-santino-rp.firebaseapp.com",
+            databaseURL: "https://helio-santino-rp-default-rtdb.firebaseio.com",
+            projectId: "helio-santino-rp",
+            storageBucket: "helio-santino-rp.firebasestorage.app",
+            messagingSenderId: "1052683565512",
+            appId: "1:1052683565512:web:e7ce898109ea18cfdda8fd"
+        };
+
+        function initCloudSync() {
+            if (typeof firebase === 'undefined') {
+                console.warn('Firebase no se pudo cargar (¿sin conexión a internet?). La sección Nube quedará desactivada.');
+                ['mp3-cloud_list', 'mp4-cloud_list', 'mp4-cloud_book_list'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.innerHTML = '<p class="song-list-empty">Sin conexión a internet</p>';
+                });
+                return;
+            }
+            try {
+                firebase.initializeApp(firebaseConfig);
+                const cloudDb = firebase.database();
+                renderCloudList(cloudDb, 'songs', 'mp3-cloud_list', 'mp3-cloud_total', item => playCloudTrack('mp3', item), 'fa-music');
+                renderCloudList(cloudDb, 'videos', 'mp4-cloud_list', 'mp4-cloud_total', item => playCloudTrack('mp4', item), 'fa-film');
+                renderCloudList(cloudDb, 'books', 'mp4-cloud_book_list', 'mp4-cloud_book_total', item => openCloudBook(item), 'fa-book');
+            } catch (err) {
+                console.warn('No se pudo conectar a Firebase:', err);
+            }
+        }
+
+        function renderCloudList(cloudDb, path, listId, countId, onClick, iconClass) {
+            const listEl = document.getElementById(listId);
+            const countEl = document.getElementById(countId);
+            cloudDb.ref(path).on('value', (snapshot) => {
+                const data = snapshot.val();
+                const entries = data ? Object.entries(data) : [];
+                countEl.innerHTML = entries.length;
+                if (entries.length === 0) {
+                    listEl.innerHTML = '<p class="song-list-empty">No hay archivos en la nube</p>';
+                    return;
+                }
+                listEl.innerHTML = '';
+                entries
+                    .sort((a, b) => (b[1].uploadedAt || 0) - (a[1].uploadedAt || 0))
+                    .forEach(([key, item]) => {
+                        const row = document.createElement('div');
+                        row.className = 'song-item';
+                        row.innerHTML = `<i class="fa ${iconClass}"></i><span class="song-name">${item.name}</span>`;
+                        row.onclick = () => onClick(item);
+                        listEl.appendChild(row);
+                    });
+            }, (err) => {
+                listEl.innerHTML = '<p class="song-list-empty">Sin conexión a la nube</p>';
+            });
+        }
+
+        function playCloudTrack(type, item) {
+            const player = players[type];
+            const state = player.getState();
+            if (state.radioPlaying) player.stopRadio();
+            clearInterval(state.timer);
+            state.media.src = item.url;
+            state.media.load();
+            state.media.play();
+            state.playing = true;
+            const titleEl = document.getElementById(`${type}-title`);
+            if (titleEl) titleEl.innerHTML = item.name;
+            const artistEl = document.getElementById(`${type}-artist`);
+            if (artistEl) artistEl.innerHTML = '☁ Reproduciendo desde la nube';
+            const playBtn = document.getElementById(`${type}-play`);
+            if (playBtn) playBtn.innerHTML = '<i class="fa fa-pause"></i>';
+            const wheelBtn = document.getElementById(`${type}-wheel_play`);
+            if (wheelBtn) wheelBtn.innerHTML = '<i class="fa fa-pause"></i>';
+            state.timer = setInterval(() => {
+                if (!isNaN(state.media.duration)) {
+                    const slider = document.getElementById(`${type}-duration_slider`);
+                    slider.value = state.media.currentTime * (100 / state.media.duration);
+                    paintSlider(slider);
+                }
+            }, 1000);
+            if (type === 'mp4') setMp4View('video');
+        }
+
+        async function openCloudBook(item) {
+            loading.style.display = 'block';
+            try {
+                const res = await fetch(item.url);
+                const text = await res.text();
+                document.getElementById('mp4-reader_title').innerHTML = `☁ ${item.name}`;
+                const textEl = document.getElementById('mp4-reader_text');
+                textEl.style.fontSize = ebookState.fontSize + 'px';
+                textEl.textContent = text;
+                document.getElementById('mp4-book_list_wrap').classList.add('hidden');
+                document.getElementById('mp4-reader_wrap').classList.remove('hidden');
+            } catch (err) {
+                console.error('Error cargando libro de la nube:', err);
+                alert('No se pudo cargar el libro de la nube');
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>
