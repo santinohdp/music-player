@@ -974,7 +974,13 @@
                     const item = document.createElement('div');
                     item.className = 'song-item' + (i === state.index ? ' active' : '');
                     item.innerHTML = `<i class="fa fa-${isVideo ? 'film' : 'music'}"></i><span class="song-name">${song.name}</span>`;
-                    item.onclick = () => openSongMenu(type, i);
+                    if (isVideo) {
+                        // MP4 sigue siendo tactil: tocar una fila abre el menu
+                        item.onclick = () => openSongMenu(type, i);
+                    } else {
+                        // MP3 no es tactil: solo se navega con la ruedita
+                        item.style.cursor = 'default';
+                    }
                     list.appendChild(item);
                 });
             }
@@ -987,7 +993,8 @@
                     const item = document.createElement('div');
                     item.className = 'radio-item' + (state.radioCurrent === i && state.radioPlaying ? ' active' : '');
                     item.innerHTML = `<i class="fa fa-rss"></i><span class="radio-name">${st.name}</span>`;
-                    item.onclick = () => playRadioStation(i);
+                    // MP3 no es tactil: la radio se elige con izquierda/derecha en la ruedita
+                    item.style.cursor = 'default';
                     list.appendChild(item);
                 });
             }
