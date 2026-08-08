@@ -166,7 +166,7 @@
             opacity: 0.85;
         }
 
-        /* Pantalla LCD azul */
+        /* Pantalla LCD azul - TAMAÑO FIJO */
         .lcd {
             background: #0a1f33;
             border: 3px solid #030c15;
@@ -175,7 +175,6 @@
             font-family: 'VT323', 'Courier New', monospace;
             color: #bfe8ff;
             position: relative;
-            overflow: hidden;
         }
 
         .lcd::before {
@@ -196,16 +195,19 @@
             background: radial-gradient(ellipse at center, #1a5f9e 0%, #0d3a63 100%);
             border-radius: 2px;
             padding: 10px;
-            min-height: 190px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Fila de iconos tipo menu del dispositivo */
         .icon-menu {
             display: flex;
             justify-content: space-around;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             padding-bottom: 8px;
             border-bottom: 1px dashed rgba(191,232,255,0.3);
+            flex-shrink: 0;
         }
 
         .icon-menu button {
@@ -227,7 +229,17 @@
         .icon-menu button i { font-size: 18px; }
         .icon-menu button.active { background: #bfe8ff; color: #0a1f33; font-weight: bold; }
 
-        .lcd-view { display: flex; flex-direction: column; gap: 8px; }
+        .lcd-view {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+        }
+
+        .lcd-view::-webkit-scrollbar { width: 4px; }
+        .lcd-view::-webkit-scrollbar-thumb { background: #bfe8ff; border-radius: 5px; }
 
         /* --- Vista reproductor --- */
         .now-line {
@@ -236,6 +248,7 @@
             font-size: 15px;
             border-bottom: 1px dashed rgba(191,232,255,0.3);
             padding-bottom: 6px;
+            flex-shrink: 0;
         }
 
         .now-title {
@@ -249,39 +262,12 @@
 
         .now-sub { font-size: 14px; opacity: 0.8; margin-bottom: 4px; }
 
-        .lcd .duration { display: flex; align-items: center; gap: 6px; }
+        .lcd .duration { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
         .lcd .duration input[type="range"] { height: 4px; }
         .lcd .duration input[type="range"]::-webkit-slider-thumb { background: #bfe8ff; height: 10px; width: 10px; margin-top: -3px; }
 
-        .lcd-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 22px;
-            margin-top: 6px;
-        }
-
-        .lcd-controls button {
-            background: none;
-            border: none;
-            color: #bfe8ff;
-            font-size: 22px;
-            cursor: pointer;
-        }
-
-        .lcd-controls button.play-btn {
-            font-size: 30px;
-            border: 2px solid #bfe8ff;
-            border-radius: 50%;
-            width: 46px;
-            height: 46px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         /* --- Vista ajustes / carpeta --- */
-        .setting-block { margin-bottom: 10px; }
+        .setting-block { margin-bottom: 8px; flex-shrink: 0; }
         .setting-label {
             display: flex;
             align-items: center;
@@ -291,11 +277,16 @@
         }
         .setting-label .value { margin-left: auto; opacity: 0.75; }
 
+        .eq-block { display: flex; gap: 10px; }
+        .eq-col { flex: 1; text-align: center; }
+        .eq-col span { font-size: 13px; display: block; margin-bottom: 3px; }
+
         .folder-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             font-size: 15px;
+            flex-shrink: 0;
         }
 
         .folder-actions { display: flex; gap: 6px; }
@@ -313,7 +304,8 @@
 
         .song-list, .radio-list {
             margin-top: 6px;
-            max-height: 130px;
+            flex: 1;
+            min-height: 0;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -331,6 +323,7 @@
             font-size: 15px;
             cursor: pointer;
             border-radius: 2px;
+            flex-shrink: 0;
         }
 
         .song-item:hover, .radio-item:hover { background: rgba(191,232,255,0.15); }
@@ -348,18 +341,36 @@
         /* --- Vista radio --- */
         .radio-now {
             text-align: center;
-            font-size: 16px;
+            font-size: 15px;
             border-bottom: 1px dashed rgba(191,232,255,0.3);
-            padding-bottom: 6px;
-            margin-bottom: 6px;
+            padding-bottom: 5px;
+            flex-shrink: 0;
         }
 
-        .radio-now .radio-station-name { font-size: 20px; }
+        .radio-now .radio-station-name {
+            font-size: 17px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .radio-play-row { display: flex; justify-content: center; flex-shrink: 0; }
+
+        .radio-play-row button {
+            background: none;
+            border: 2px solid #bfe8ff;
+            color: #bfe8ff;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+            cursor: pointer;
+        }
 
         .radio-add {
             display: flex;
             gap: 5px;
-            margin-top: 8px;
+            flex-shrink: 0;
         }
 
         .radio-add input {
@@ -383,7 +394,7 @@
             cursor: pointer;
         }
 
-        /* Rueda de control estilo dispositivo (decorativa + navega) */
+        /* Rueda de control estilo dispositivo (unicos controles de reproduccion) */
         .wheel {
             width: 110px;
             height: 110px;
@@ -643,7 +654,7 @@
                         <button id="mp3-tab-ajustes" onclick="setView('mp3','ajustes')"><i class="fa fa-cog"></i>Ajustes</button>
                     </div>
 
-                    <!-- Vista: reproductor -->
+                    <!-- Vista: reproductor (sin botones propios, se controla con la ruedita) -->
                     <div class="lcd-view" id="mp3-view-player">
                         <div class="now-line">
                             <span>MP3</span>
@@ -655,23 +666,18 @@
                         <div class="duration">
                             <input type="range" min="0" max="100" value="0" id="mp3-duration_slider" onchange="changeDuration('mp3')">
                         </div>
-
-                        <div class="lcd-controls">
-                            <button onclick="previousMedia('mp3')"><i class="fa fa-step-backward"></i></button>
-                            <button class="play-btn" id="mp3-play" onclick="justPlay('mp3')"><i class="fa fa-play"></i></button>
-                            <button onclick="nextMedia('mp3')"><i class="fa fa-step-forward"></i></button>
-                        </div>
+                        <button id="mp3-play" class="hidden"><i class="fa fa-play"></i></button>
                     </div>
 
                     <!-- Vista: radio -->
                     <div class="lcd-view hidden" id="mp3-view-radio">
                         <div class="radio-now">
-                            <div>RADIO ONLINE</div>
+                            <div>RADIO ARGENTINA</div>
                             <div class="radio-station-name" id="mp3-radio_now">Ninguna emisora seleccionada</div>
                         </div>
 
-                        <div class="lcd-controls" style="margin-top:0;">
-                            <button class="play-btn" id="mp3-radio_play" onclick="toggleRadio('mp3')"><i class="fa fa-play"></i></button>
+                        <div class="radio-play-row">
+                            <button id="mp3-radio_play" onclick="toggleRadio('mp3')"><i class="fa fa-play"></i></button>
                         </div>
 
                         <div class="radio-list" id="mp3-radio_list"></div>
@@ -703,6 +709,20 @@
                         </div>
 
                         <div class="setting-block">
+                            <div class="setting-label"><i class="fa fa-sliders"></i> Ecualizador</div>
+                            <div class="eq-block">
+                                <div class="eq-col">
+                                    <span>Graves <span id="mp3-bass_show">0dB</span></span>
+                                    <input type="range" min="-20" max="20" value="0" oninput="eqChange('mp3','bass')" id="mp3-bass">
+                                </div>
+                                <div class="eq-col">
+                                    <span>Agudos <span id="mp3-treble_show">0dB</span></span>
+                                    <input type="range" min="-20" max="20" value="0" oninput="eqChange('mp3','treble')" id="mp3-treble">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-block" style="flex:1; min-height:0; display:flex; flex-direction:column;">
                             <div class="folder-header">
                                 <span><i class="fa fa-folder-open"></i> Carpeta (<span id="mp3-total">0</span>)</span>
                                 <div class="folder-actions">
@@ -720,13 +740,13 @@
                 </div>
             </div>
 
-            <!-- Rueda de navegacion decorativa / accesos rapidos -->
+            <!-- Rueda de navegacion: UNICO control de reproduccion -->
             <div class="wheel">
                 <button class="w-up" onclick="volumeStep('mp3', 5)"><i class="fa fa-chevron-up"></i></button>
                 <button class="w-down" onclick="volumeStep('mp3', -5)"><i class="fa fa-chevron-down"></i></button>
                 <button class="w-left" onclick="previousMedia('mp3')"><i class="fa fa-chevron-left"></i></button>
                 <button class="w-right" onclick="nextMedia('mp3')"><i class="fa fa-chevron-right"></i></button>
-                <button class="w-center" onclick="justPlay('mp3')"><i class="fa fa-play"></i></button>
+                <button class="w-center" id="mp3-wheel_play" onclick="justPlay('mp3')"><i class="fa fa-play"></i></button>
             </div>
         </div>
     </div>
@@ -811,15 +831,30 @@
             });
         }
 
-        const DEFAULT_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect fill='%23333' width='300' height='300'/%3E%3Ctext fill='%23fff' font-size='24' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3E🎵%3C/text%3E%3C/svg%3E";
-
+        // ===== EMISORAS DE RADIO DE ARGENTINA (AM/FM online) =====
         const RADIO_PRESETS = [
-            { name: 'Groove Salad (chill)', url: 'https://ice1.somafm.com/groovesalad-128-mp3' },
-            { name: 'Indie Pop Rocks', url: 'https://ice1.somafm.com/indiepop-128-mp3' },
-            { name: 'Left Coast 70s', url: 'https://ice1.somafm.com/seventies-128-mp3' },
-            { name: 'Beat Blender', url: 'https://ice1.somafm.com/beatblender-128-mp3' },
-            { name: 'Drone Zone', url: 'https://ice1.somafm.com/dronezone-128-mp3' }
+            { name: 'Radio Madre 530 AM', url: 'http://cdn.instream.audio:9288/stream' },
+            { name: 'Radio Argentina 570 AM', url: 'https://server.laradio.online:15224/live.mp3' },
+            { name: 'Continental 590 AM', url: 'https://edge05.radiohdvivo.com/continental' },
+            { name: 'Radio Cooperativa 770 AM', url: 'https://cdn.instream.audio:9582/stream' },
+            { name: 'Radio Nacional 870 AM', url: 'https://sa.mp3.icecast.magma.edge-access.net/sc_rad1' },
+            { name: 'Radio Génesis 970 AM', url: 'https://01.solumedia.com.ar:8216/' },
+            { name: 'Del Plata 1030 AM', url: 'https://streaming01.shockmedia.com.ar:10217/stream' },
+            { name: 'Eco Medios 1220 AM', url: 'https://stream-159.zeno.fm/uv3vkhw2qvduv' },
+            { name: 'La Tribu 88.7 FM', url: 'https://radio01.ferozo.com/proxy/ra01000659?mp=/;' },
+            { name: 'Nacional Rock 93.7 FM', url: 'https://sa.mp3.icecast.magma.edge-access.net/sc_rad1' },
+            { name: 'Nacional Clásica 96.7 FM', url: 'https://sa.mp3.icecast.magma.edge-access.net/sc_rad37' },
+            { name: 'Radio Cultura 97.9 FM', url: 'https://usa5.fastcast4u.com/proxy/radiocultura?mp=/1' },
+            { name: 'Nacional Folklórica 98.7 FM', url: 'https://sa.mp3.icecast.magma.edge-access.net/sc_rad38' },
+            { name: 'NOW 97.9 FM', url: 'https://cdn.instream.audio:9604/stream' },
+            { name: 'Sonido 103.5 FM', url: 'https://streaming.radiosenlinea.com.ar/8780/stream/1/' },
+            { name: 'Urbana Play 104.3 FM', url: 'https://cdn.instream.audio:9660/stream' },
+            { name: 'Vorterix 92.1 FM', url: 'https://ice2.edge-apps.net/radio1_high-20057.audio' },
+            { name: 'Cadena 3 FM (Córdoba)', url: 'https://liveradio.mediainbox.net/radio3.mp3' },
+            { name: 'Cadena Heat 91.9 (Córdoba)', url: 'https://liveradio.mediainbox.net/fmcordoba.mp3' }
         ];
+
+        const DEFAULT_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect fill='%23333' width='300' height='300'/%3E%3Ctext fill='%23fff' font-size='24' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3E🎵%3C/text%3E%3C/svg%3E";
 
         // ===== INDEXEDDB =====
         const DB_NAME = 'MusicPlayerDB';
@@ -915,10 +950,48 @@
                 radioStations: isVideo ? [] : [...RADIO_PRESETS],
                 radioAudio: isVideo ? null : new Audio(),
                 radioPlaying: false,
-                radioCurrent: null
+                radioCurrent: null,
+                // ecualizador
+                audioCtx: null,
+                bassNode: null,
+                trebleNode: null,
+                radioBassNode: null,
+                radioTrebleNode: null
             };
 
             state.media = isVideo ? el('track_image') : document.createElement('audio');
+
+            // Conecta un elemento de audio/video a un ecualizador basico (graves/agudos)
+            function setupEQ(mediaEl) {
+                try {
+                    if (!state.audioCtx) {
+                        const AC = window.AudioContext || window.webkitAudioContext;
+                        state.audioCtx = new AC();
+                    }
+                    const source = state.audioCtx.createMediaElementSource(mediaEl);
+                    const bass = state.audioCtx.createBiquadFilter();
+                    bass.type = 'lowshelf';
+                    bass.frequency.value = 200;
+                    bass.gain.value = 0;
+                    const treble = state.audioCtx.createBiquadFilter();
+                    treble.type = 'highshelf';
+                    treble.frequency.value = 3000;
+                    treble.gain.value = 0;
+                    source.connect(bass);
+                    bass.connect(treble);
+                    treble.connect(state.audioCtx.destination);
+                    return { bass, treble };
+                } catch (e) {
+                    console.warn('EQ no disponible para este audio:', e);
+                    return null;
+                }
+            }
+
+            function ensureAudioCtxResumed() {
+                if (state.audioCtx && state.audioCtx.state === 'suspended') {
+                    state.audioCtx.resume();
+                }
+            }
 
             function renderLibrary() {
                 const list = el('song_list');
@@ -945,14 +1018,23 @@
                     const item = document.createElement('div');
                     item.className = 'radio-item' + (state.radioCurrent === i && state.radioPlaying ? ' active' : '');
                     item.innerHTML = `<i class="fa fa-rss"></i><span class="radio-name">${st.name}</span>`;
-                    item.onclick = () => playRadioStation(type, i);
+                    item.onclick = () => playRadioStation(i);
                     list.appendChild(item);
                 });
             }
 
-            function playRadioStation(t, i) {
+            function stopRadio() {
+                if (!state.radioAudio) return;
+                state.radioAudio.pause();
+                state.radioPlaying = false;
+                if (el('radio_play')) el('radio_play').innerHTML = '<i class="fa fa-play"></i>';
+                renderRadioList();
+            }
+
+            function playRadioStation(i) {
                 const st = state.radioStations[i];
                 if (!st) return;
+                ensureAudioCtxResumed();
                 if (state.playing) pause();
                 state.radioCurrent = i;
                 state.radioAudio.src = st.url;
@@ -965,8 +1047,9 @@
             }
 
             function toggleRadio() {
+                ensureAudioCtxResumed();
                 if (state.radioCurrent === null) {
-                    if (state.radioStations.length > 0) playRadioStation(type, 0);
+                    if (state.radioStations.length > 0) playRadioStation(0);
                     return;
                 }
                 if (state.radioPlaying) {
@@ -993,7 +1076,7 @@
 
             function loadTrack(i) {
                 if (state.allMedia.length === 0) return;
-                if (state.radioPlaying) { state.radioAudio.pause(); state.radioPlaying = false; if (el('radio_play')) el('radio_play').innerHTML = '<i class="fa fa-play"></i>'; renderRadioList(); }
+                ensureAudioCtxResumed();
                 clearInterval(state.timer);
                 el('duration_slider').value = 0;
                 paintSlider(el('duration_slider'));
@@ -1001,10 +1084,6 @@
                 state.media.src = state.allMedia[i].url;
                 el('title').innerHTML = state.allMedia[i].name;
                 el('artist').innerHTML = `${isVideo ? 'Video' : 'Canción'} ${i + 1} de ${state.allMedia.length}`;
-
-                if (!isVideo) {
-                    if (el('bitrate')) el('bitrate').innerHTML = 'MP3';
-                }
 
                 state.media.load();
                 state.timer = setInterval(rangeSlider, 1000);
@@ -1014,16 +1093,20 @@
             }
 
             function play() {
+                ensureAudioCtxResumed();
+                if (state.radioPlaying) stopRadio();
                 state.media.play();
                 state.playing = true;
-                el('play').innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
+                if (el('play')) el('play').innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
+                if (el('wheel_play')) el('wheel_play').innerHTML = '<i class="fa fa-pause"></i>';
                 renderLibrary();
             }
 
             function pause() {
                 state.media.pause();
                 state.playing = false;
-                el('play').innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
+                if (el('play')) el('play').innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
+                if (el('wheel_play')) el('wheel_play').innerHTML = '<i class="fa fa-play"></i>';
             }
 
             function justPlay() {
@@ -1079,6 +1162,28 @@
                 el('brightness_show').innerHTML = `${b.value}%`;
             }
 
+            function eqChange(band) {
+                ensureAudioCtxResumed();
+                // Conecta el EQ recien la primera vez que se toca (evita crashear si el navegador bloquea autoplay del contexto)
+                if (!state.bassNode && !isVideo) {
+                    const chain = setupEQ(state.media);
+                    if (chain) { state.bassNode = chain.bass; state.trebleNode = chain.treble; }
+                }
+                if (!state.radioBassNode && state.radioAudio) {
+                    const chainR = setupEQ(state.radioAudio);
+                    if (chainR) { state.radioBassNode = chainR.bass; state.radioTrebleNode = chainR.treble; }
+                }
+                const val = Number(el(band).value);
+                el(`${band}_show`).innerHTML = `${val}dB`;
+                if (band === 'bass') {
+                    if (state.bassNode) state.bassNode.gain.value = val;
+                    if (state.radioBassNode) state.radioBassNode.gain.value = val;
+                } else {
+                    if (state.trebleNode) state.trebleNode.gain.value = val;
+                    if (state.radioTrebleNode) state.radioTrebleNode.gain.value = val;
+                }
+            }
+
             function changeDuration() {
                 const pos = state.media.duration * (el('duration_slider').value / 100);
                 state.media.currentTime = pos;
@@ -1090,7 +1195,8 @@
                     paintSlider(el('duration_slider'));
                 }
                 if (state.media.ended) {
-                    el('play').innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
+                    if (el('play')) el('play').innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
+                    if (el('wheel_play')) el('wheel_play').innerHTML = '<i class="fa fa-play"></i>';
                     if (state.autoplay === 1) next();
                 }
             }
@@ -1191,7 +1297,7 @@
 
             if (isVideo) {
                 state.media.addEventListener('ended', () => {
-                    el('play').innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
+                    if (el('play')) el('play').innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
                     if (state.autoplay === 1) next();
                 });
             }
@@ -1202,9 +1308,9 @@
             });
 
             return {
-                justPlay, next, previous, volumeChange, volumeStep, mute, brightnessChange,
+                justPlay, next, previous, volumeChange, volumeStep, mute, brightnessChange, eqChange,
                 changeDuration, clearAll, init, loadTrack, play,
-                deleteOne, toggleRadio, addRadioStation,
+                deleteOne, toggleRadio, addRadioStation, stopRadio,
                 getState: () => state
             };
         }
@@ -1222,6 +1328,7 @@
         function volumeStep(type, delta) { players[type].volumeStep(delta); }
         function muteSound(type) { players[type].mute(); }
         function brightnessChange(type) { players[type].brightnessChange(); }
+        function eqChange(type, band) { players[type].eqChange(band); }
         function changeDuration(type) { players[type].changeDuration(); }
         function clearAllMedia(type) { players[type].clearAll(); }
         function toggleRadio(type) { players[type].toggleRadio(); }
@@ -1229,6 +1336,12 @@
 
         // ===== NAVEGACION ENTRE VISTAS (Música / Radio / Ajustes) =====
         function setView(type, view) {
+            const state = players[type].getState();
+            // si nos vamos de la vista de radio, se detiene la reproduccion de radio
+            const wasRadio = !document.getElementById(`${type}-view-radio`).classList.contains('hidden');
+            if (wasRadio && view !== 'radio' && state.radioPlaying) {
+                players[type].stopRadio();
+            }
             ['player', 'radio', 'ajustes'].forEach(v => {
                 document.getElementById(`${type}-view-${v}`).classList.toggle('hidden', v !== view);
                 document.getElementById(`${type}-tab-${v}`).classList.toggle('active', v === view);
@@ -1272,6 +1385,9 @@
         }
 
         function goBack(type) {
+            // al salir del reproductor tambien se detiene la radio si estaba sonando
+            const state = players[type].getState();
+            if (state.radioPlaying) players[type].stopRadio();
             document.getElementById(`${type}-player`).classList.add('hidden');
             document.getElementById('mode-select').classList.remove('hidden');
         }
